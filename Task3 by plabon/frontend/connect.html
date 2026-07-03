@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Connect Prototype</title>
+  <style>body{font-family:Arial, sans-serif}.card{max-width:480px;margin:20px auto;padding:12px;border:1px solid #ddd;border-radius:6px}button[disabled]{opacity:.6}</style>
+</head>
+<body>
+  <div class="card">
+    <h3>Double Opt-In Connect Prototype</h3>
+    <label>Your ID: <input id="me" type="number" value="1"></label>
+    <label>Target ID: <input id="them" type="number" value="2"></label>
+    <div style="margin-top:8px">
+      <button id="connect">Connect</button>
+      <span id="status" style="margin-left:12px"></span>
+    </div>
+    <pre id="out" style="margin-top:12px"></pre>
+  </div>
+
+  <script>
+    document.getElementById('connect').addEventListener('click', async function(){
+      const me = Number(document.getElementById('me').value);
+      const them = Number(document.getElementById('them').value);
+      if (!me || !them || me===them) { alert('Invalid ids'); return; }
+      document.getElementById('status').textContent = 'Sending...';
+      try {
+        const res = await fetch('../api/connect_request.php', {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ sender_id: me, receiver_id: them })
+        });
+        const d = await res.json();
+        document.getElementById('out').textContent = JSON.stringify({status: res.status, body: d}, null, 2);
+        if (res.status === 201) {
+          document.getElementById('status').textContent = 'Request Pending';
+          document.getElementById('connect').disabled = true;
+        } else if (d.status === 'ACCEPTED') {
+          document.getElementById('status').textContent = "It's a Match!";
+          document.getElementById('connect').disabled = true;
+        } else {
+          document.getElementById('status').textContent = d.message || d.error || 'OK';
+        }
+      } catch (e) { document.getElementById('out').textContent = e.message; document.getElementById('status').textContent = 'Error'; }
+    });
+  </script>
+</body>
+</html>
