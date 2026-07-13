@@ -10,6 +10,9 @@ USE roommate_rental;
 DROP TABLE IF EXISTS bill_log_roommates;
 DROP TABLE IF EXISTS bill_logs;
 DROP TABLE IF EXISTS appointments;
+DROP TABLE IF EXISTS messages;
+DROP TABLE IF EXISTS user_reviews;
+DROP TABLE IF EXISTS connection_requests;
 DROP TABLE IF EXISTS listings;
 DROP TABLE IF EXISTS user_profile_tags;
 DROP TABLE IF EXISTS user_profiles;
@@ -20,6 +23,10 @@ CREATE TABLE users (
     full_name VARCHAR(120) NOT NULL,
     email VARCHAR(180) NOT NULL UNIQUE,
     city VARCHAR(120) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL DEFAULT '',
+    role ENUM('tenant', 'landlord', 'admin') NOT NULL DEFAULT 'tenant',
+    remember_token_hash VARCHAR(200) DEFAULT NULL,
+    remember_token_expires_at DATETIME DEFAULT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
@@ -96,4 +103,42 @@ CREATE TABLE bill_log_roommates (
     contribution DECIMAL(10,2) NOT NULL,
     percentage_share DECIMAL(5,2) NOT NULL,
     CONSTRAINT fk_bill_roommates_bill FOREIGN KEY (bill_log_id) REFERENCES bill_logs(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE connection_requests (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    sender_id INT NOT NULL,
+    receiver_id INT NOT NULL,
+    status ENUM('PENDING', 'ACCEPTED', 'REJECTED') NOT NULL DEFAULT 'PENDING',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_connection_sender FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_connection_receiver FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE KEY uq_connection_pair (sender_id, receiver_id),
+    INDEX idx_connection_lookup (receiver_id, status),
+    INDEX idx_connection_sender (sender_id, status)
+) ENGINE=InnoDB;
+
+CREATE TABLE user_reviews (
+    review_id INT AUTO_INCREMENT PRIMARY KEY,
+    reviewer_id INT NOT NULL,
+    reviewee_id INT NOT NULL,
+    cleanliness_score TINYINT NOT NULL CHECK (cleanliness_score BETWEEN 1 AND 5),
+    communication_score TINYINT NOT NULL CHECK (communication_score BETWEEN 1 AND 5),
+    written_feedback TEXT,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_review_reviewer FOREIGN KEY (reviewer_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_review_reviewee FOREIGN KEY (reviewee_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_review_reviewee (reviewee_id, created_at)
+) ENGINE=InnoDB;
+
+CREATE TABLE messages (
+    message_id INT AUTO_INCREMENT PRIMARY KEY,
+    sender_id INT NOT NULL,
+    receiver_id INT NOT NULL,
+    message_text TEXT NOT NULL,
+    sent_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_message_sender FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_message_receiver FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_message_lookup (sender_id, receiver_id, message_id)
 ) ENGINE=InnoDB;
