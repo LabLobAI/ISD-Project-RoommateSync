@@ -1,11 +1,11 @@
 USE roommate_rental;
 
-INSERT INTO users (full_name, email, city) VALUES
-('Ayesha Rahman', 'ayesha@example.com', 'Dhaka'),
-('Rakib Hasan', 'rakib@example.com', 'Dhaka'),
-('Nusrat Karim', 'nusrat@example.com', 'Dhaka'),
-('Sajid Ahmed', 'sajid@example.com', 'Chittagong'),
-('Tania Akter', 'tania@example.com', 'Dhaka');
+INSERT INTO users (full_name, email, city, password_hash, role) VALUES
+('Ayesha Rahman', 'ayesha@example.com', 'Dhaka', '$2y$12$2GFFMyyshhiF/YrthnbLq.DP0cV0ZUuxI0/3ywuQYUxyDo78w0uOq', 'tenant'),
+('Rakib Hasan', 'rakib@example.com', 'Dhaka', '$2y$12$2GFFMyyshhiF/YrthnbLq.DP0cV0ZUuxI0/3ywuQYUxyDo78w0uOq', 'landlord'),
+('Nusrat Karim', 'nusrat@example.com', 'Dhaka', '$2y$12$2GFFMyyshhiF/YrthnbLq.DP0cV0ZUuxI0/3ywuQYUxyDo78w0uOq', 'tenant'),
+('Sajid Ahmed', 'sajid@example.com', 'Chittagong', '$2y$12$2GFFMyyshhiF/YrthnbLq.DP0cV0ZUuxI0/3ywuQYUxyDo78w0uOq', 'landlord'),
+('Tania Akter', 'tania@example.com', 'Dhaka', '$2y$12$2GFFMyyshhiF/YrthnbLq.DP0cV0ZUuxI0/3ywuQYUxyDo78w0uOq', 'tenant');
 
 INSERT INTO user_profiles (user_id, cleanliness, sleep_start, sleep_end, wfh_status, smoking_ok, pets_ok, budget_min, budget_max) VALUES
 (1, 5, '23:00:00', '07:00:00', 'hybrid', 0, 1, 8000, 18000),
@@ -31,3 +31,14 @@ INSERT INTO listings (landlord_id, title, description, location_text, rent, room
 INSERT INTO appointments (listing_id, tenant_id, start_time, end_time, booking_status) VALUES
 (1, 1, '2026-07-05 10:00:00', '2026-07-05 10:30:00', 'CONFIRMED'),
 (1, 3, '2026-07-05 14:00:00', '2026-07-05 14:30:00', 'PENDING');
+
+INSERT INTO connection_requests (sender_id, receiver_id, status) VALUES
+(1, 2, 'ACCEPTED'),
+(2, 1, 'ACCEPTED');
+
+INSERT INTO user_reviews (reviewer_id, reviewee_id, cleanliness_score, communication_score, written_feedback) VALUES
+(1, 2, 5, 4, 'Reliable and easy to coordinate with.');
+
+INSERT INTO messages (sender_id, receiver_id, message_text) VALUES
+(1, 2, 'Hi Rakib, the room looks good. When can we talk?'),
+(2, 1, 'I am free this evening. Let us connect here.');
