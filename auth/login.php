@@ -33,7 +33,7 @@ layout_header('Sign in - RoommateSync', [
         <section class="auth-card">
             <p class="eyebrow">RoommateSync</p>
             <h1>Sign in</h1>
-            <p class="lede">Use your account to keep your session active across visits with a remember-me cookie.</p>
+            <p class="lede">Welcome back. Sign in to access your dashboard.</p>
 
             <?php if ($errors): ?>
                 <div class="flash-message error"><?= h(implode(' ', $errors)) ?></div>

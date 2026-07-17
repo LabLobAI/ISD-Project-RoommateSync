@@ -34,7 +34,7 @@ layout_header('Create account - RoommateSync', [
         <section class="auth-card">
             <p class="eyebrow">RoommateSync</p>
             <h1>Create account</h1>
-            <p class="lede">Register once and the app will keep you signed in with a secure session and remember-me cookie.</p>
+            <p class="lede">Create your account and start finding a roommate.</p>
 
             <?php if ($errors): ?>
                 <div class="flash-message error"><?= h(implode(' ', $errors)) ?></div>

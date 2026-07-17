@@ -70,13 +70,6 @@ function handle_room_image_upload(array $file): string
     return $publicBase . '/uploads/' . $safeFileName;
 }
 
-try {
-    $landlords = db()->query('SELECT id, full_name, email FROM users WHERE role IN ("landlord", "admin") ORDER BY full_name')->fetchAll();
-} catch (Throwable $exception) {
-    $landlords = [];
-    $errors[] = 'Database connection failed. Please confirm the common roommate_rental database is imported.';
-}
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim((string) post_value('title'));
     $description = trim((string) post_value('description'));
@@ -85,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $roomType = (string) post_value('room_type', 'private');
     $bedrooms = filter_var(post_value('bedrooms', 1), FILTER_VALIDATE_INT);
     $bathrooms = filter_var(post_value('bathrooms', 1), FILTER_VALIDATE_FLOAT);
-    $landlordId = filter_var(post_value('landlord_id'), FILTER_VALIDATE_INT);
+    $landlordId = (int) $authUser['id'];
     $selectedRules = $_POST['house_rules'] ?? [];
 
     if ($title === '' || mb_strlen($title) > 180) {
@@ -114,10 +107,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($bathrooms === false || $bathrooms < 0.5 || $bathrooms > 10) {
         $errors[] = 'Bathrooms must be between 0.5 and 10.';
-    }
-
-    if ($landlordId === false || $landlordId <= 0) {
-        $errors[] = 'Please select a valid landlord account.';
     }
 
     $validRules = array_values(array_intersect($selectedRules, array_keys($houseRuleLabels)));
@@ -182,9 +171,8 @@ layout_header('Create Rental Listing', [
     <div class="page-shell">
         <header class="page-header">
             <div>
-                <p class="eyebrow">Landlord Dashboard</p>
                 <h1>Create Rental Listing</h1>
-                <p class="lede">Add room details, validate the uploaded image, and save the listing path into the common <strong>roommate_rental</strong> MySQL database.</p>
+                <p class="lede">Add room details, upload a photo, and publish your listing.</p>
             </div>
         </header>
 
@@ -212,42 +200,29 @@ layout_header('Create Rental Listing', [
                     <h2><?= h($createdListing['title']) ?></h2>
                     <p><?= h($createdListing['location_text']) ?></p>
                     <p><strong>৳<?= money($createdListing['rent']) ?></strong> / month</p>
-                    <p><?= h(ucfirst($createdListing['room_type'])) ?> room • <?= h((string) $createdListing['bedrooms']) ?> bedroom(s) • <?= h((string) $createdListing['bathrooms']) ?> bathroom(s)</p>
-                    <p class="small-note">Saved Listing ID: <?= h((string) $createdListing['id']) ?></p>
+                    <p><?= h(ucfirst($createdListing['room_type'])) ?> room &middot; <?= h((string) $createdListing['bedrooms']) ?> bed &middot; <?= h((string) $createdListing['bathrooms']) ?> bath</p>
                 </div>
             </section>
         <?php endif; ?>
 
         <section class="card">
             <form method="post" enctype="multipart/form-data" id="listingForm">
-                <div class="grid-2">
-                    <label>
-                        Landlord Account
-                        <select name="landlord_id" required>
-                            <option value="">Select landlord</option>
-                            <?php foreach ($landlords as $landlord): ?>
-                                <option value="<?= h((string) $landlord['id']) ?>" <?= (string) post_value('landlord_id') === (string) $landlord['id'] ? 'selected' : '' ?>>
-                                    <?= h($landlord['full_name']) ?> (ID: <?= h((string) $landlord['id']) ?>)
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </label>
-
-                    <label>
-                        Monthly Rent
-                        <input type="number" name="rent" min="1" step="0.01" required value="<?= h((string) post_value('rent')) ?>" placeholder="Example: 15000">
-                    </label>
-                </div>
-
                 <label>
                     Listing Title
                     <input type="text" name="title" maxlength="180" required value="<?= h((string) post_value('title')) ?>" placeholder="Sunny private room near campus">
                 </label>
 
-                <label>
-                    Location / Address
-                    <input type="text" name="location_text" maxlength="180" required value="<?= h((string) post_value('location_text')) ?>" placeholder="Dhanmondi, Dhaka">
-                </label>
+                <div class="grid-2">
+                    <label>
+                        Location / Address
+                        <input type="text" name="location_text" maxlength="180" required value="<?= h((string) post_value('location_text')) ?>" placeholder="Dhanmondi, Dhaka">
+                    </label>
+
+                    <label>
+                        Monthly Rent
+                        <input type="number" name="rent" min="1" step="0.01" required value="<?= h((string) post_value('rent')) ?>" placeholder="15000">
+                    </label>
+                </div>
 
                 <div class="grid-3">
                     <label>
@@ -271,7 +246,7 @@ layout_header('Create Rental Listing', [
 
                 <label>
                     Description
-                    <textarea name="description" rows="5" required placeholder="Write room facilities, nearby locations, and other details..."><?= h((string) post_value('description')) ?></textarea>
+                    <textarea name="description" rows="4" required placeholder="Room facilities, nearby locations, other details..."><?= h((string) post_value('description')) ?></textarea>
                 </label>
 
                 <fieldset>
@@ -287,7 +262,7 @@ layout_header('Create Rental Listing', [
                 </fieldset>
 
                 <label>
-                    Room Image <span class="small-note">JPG/PNG only, max 5 MB</span>
+                    Room Image <span class="small-note">JPG/PNG, max 5 MB</span>
                     <input type="file" name="room_image" id="roomImage" accept="image/jpeg,image/png" required>
                 </label>
 

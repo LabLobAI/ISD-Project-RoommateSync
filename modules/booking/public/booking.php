@@ -159,11 +159,6 @@ layout_header('Book Viewing', [
             </div>
 
             <div class="form-group">
-                <label for="tenantId">Tenant/User ID</label>
-                <input type="number" id="tenantId" value="<?= h((string) $authUser['id']) ?>" min="1">
-            </div>
-
-            <div class="form-group">
                 <label for="bookingDate">Date</label>
                 <input type="date" id="bookingDate">
             </div>

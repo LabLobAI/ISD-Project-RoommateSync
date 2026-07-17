@@ -84,8 +84,7 @@ layout_header('Rental Marketplace', [
 
         <div class="page-content">
             <aside class="card filter-panel">
-                <p class="card-kicker">Search Filters</p>
-                <h2 class="card-title">Refine your search</h2>
+                <h2 class="card-title">Filters</h2>
 
                 <div class="form-group">
                     <label for="maxPrice">Maximum Price: <span id="priceLabel">20000</span></label>
@@ -108,9 +107,6 @@ layout_header('Rental Marketplace', [
             </aside>
 
             <section class="card">
-                <div class="card-header">
-                    <h2 class="card-title">Listings</h2>
-                </div>
                 <div id="listingGrid" class="listings-grid"></div>
             </section>
         </div>

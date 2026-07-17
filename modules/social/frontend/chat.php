@@ -35,7 +35,6 @@ layout_header('Chat', [
 
         <div class="page-content">
             <article class="card">
-                <p class="card-kicker">Conversation</p>
                 <h2 class="card-title">Messages</h2>
 
                 <div class="form-group">
@@ -54,8 +53,7 @@ layout_header('Chat', [
             </article>
 
             <aside class="card">
-                <p class="card-kicker">Send message</p>
-                <h2 class="card-title">New message</h2>
+                <h2 class="card-title">Send Message</h2>
 
                 <form id="messageForm">
                     <input type="hidden" id="senderId" value="<?= (int) $currentUserId ?>">
@@ -65,7 +63,6 @@ layout_header('Chat', [
                     </div>
                     <div class="action-row">
                         <button class="primary-button" type="submit">Send</button>
-                        <span class="muted">Sender ID: <?= (int) $currentUserId ?></span>
                     </div>
                 </form>
             </aside>
