@@ -29,6 +29,14 @@ A full-stack PHP web application for university students and young professionals
   - [UML Use Case Diagram](#uml-use-case-diagram)
   - [UML Class Diagram](#uml-class-diagram)
   - [UML Sequence Diagrams](#uml-sequence-diagrams)
+  - [UML Activity Diagrams](#uml-activity-diagrams)
+  - [UML State Machine Diagrams](#uml-state-machine-diagrams)
+  - [UML Component Diagram](#uml-component-diagram)
+  - [UML Deployment Diagram](#uml-deployment-diagram)
+  - [UML Communication Diagram](#uml-communication-diagram)
+  - [UML Timing Diagram](#uml-timing-diagram)
+  - [UML Object Diagram](#uml-object-diagram)
+  - [UML Package Diagram](#uml-package-diagram)
 - [Technology Stack](#technology-stack)
 - [Project Structure](#project-structure)
 - [Features](#features)
@@ -374,6 +382,9 @@ graph TB
         UC10[Submit Peer Review]
         UC11[View Review Summary]
         UC12[Manage Users]
+        UC13[Logout]
+        UC14[Save Bill Log]
+        UC15[Cancel Booking]
     end
 
     Tenant --> UC1
@@ -386,14 +397,22 @@ graph TB
     Tenant --> UC9
     Tenant --> UC10
     Tenant --> UC11
+    Tenant --> UC13
+    Tenant --> UC14
+    Tenant --> UC15
 
     Landlord --> UC1
     Landlord --> UC5
     Landlord --> UC2
     Landlord --> UC9
+    Landlord --> UC13
 
     Admin --> UC12
     Admin --> UC1
+    Admin --> UC13
+
+    UC7 ..> UC8 : <<include>>
+    UC8 ..> UC9 : <<include>>
 ```
 
 ### UML Class Diagram
@@ -407,10 +426,14 @@ classDiagram
         +String city
         +String passwordHash
         +String role
+        +String rememberTokenHash
+        +DateTime rememberTokenExpiresAt
+        +DateTime createdAt
         +login(email, password) bool
         +register(data) bool
         +logout() void
         +getRole() String
+        +isAuthenticated() bool
     }
 
     class UserProfile {
@@ -423,6 +446,13 @@ classDiagram
         +bool petsOk
         +float budgetMin
         +float budgetMax
+        +DateTime updatedAt
+    }
+
+    class UserProfileTag {
+        +int id
+        +int userId
+        +String tag
     }
 
     class Listing {
@@ -437,8 +467,10 @@ classDiagram
         +float bathrooms
         +String status
         +String imageUrl
+        +DateTime createdAt
         +create(data) bool
         +updateStatus(status) bool
+        +search(filters) List
     }
 
     class Appointment {
@@ -448,9 +480,11 @@ classDiagram
         +DateTime startTime
         +DateTime endTime
         +String bookingStatus
+        +DateTime createdAt
         +book(slot) bool
         +cancel() bool
         +checkConflict(slot) bool
+        +getAvailableSlots(listingId, date) List
     }
 
     class ConnectionRequest {
@@ -458,10 +492,13 @@ classDiagram
         +int senderId
         +int receiverId
         +String status
+        +DateTime createdAt
+        +DateTime updatedAt
         +send() bool
         +accept() bool
         +reject() bool
         +isAccepted() bool
+        +mutualAccept() bool
     }
 
     class Message {
@@ -472,6 +509,7 @@ classDiagram
         +DateTime sentAt
         +send(text) bool
         +fetchThread(userId) List
+        +escapeHtml(text) String
     }
 
     class UserReview {
@@ -481,8 +519,10 @@ classDiagram
         +int cleanlinessScore
         +int communicationScore
         +String writtenFeedback
+        +DateTime createdAt
         +submit() bool
         +getAverage(userId) float
+        +getAggregatedScore(userId) float
     }
 
     class BillLog {
@@ -491,16 +531,60 @@ classDiagram
         +String billName
         +float totalBill
         +float combinedIncome
+        +DateTime createdAt
         +save(breakdown) bool
+        +calculateShares(roommates) List
     }
 
-    User "1" --> "1" UserProfile : has
+    class BillLogRoommate {
+        +int id
+        +int billLogId
+        +String roommateName
+        +float income
+        +float contribution
+        +float percentageShare
+    }
+
+    class Database {
+        <<singleton>>
+        +PDO instance
+        +db() PDO
+        +prepare(sql) PDOStatement
+        +execute(params) bool
+        +beginTransaction() bool
+        +commit() bool
+        +rollBack() bool
+    }
+
+    class Auth {
+        <<utility>>
+        +auth_login(email, pass, remember) Array
+        +auth_register(name, email, city, pass) Array
+        +auth_user() Array
+        +auth_user_id() int
+        +auth_user_role() String
+        +auth_require_login() Array
+        +auth_is_landlord(id) bool
+        +auth_logout() void
+    }
+
+    User "1" --> "1" UserProfile : has profile
+    User "1" --> "*" UserProfileTag : has tags
     User "1" --> "*" Listing : owns
     User "1" --> "*" Appointment : books
+    User "1" --> "*" ConnectionRequest : sends
+    User "1" --> "*" ConnectionRequest : receives
     User "1" --> "*" Message : sends
+    User "1" --> "*" Message : receives
     User "1" --> "*" UserReview : writes
+    User "1" --> "*" UserReview : receives
     User "1" --> "*" BillLog : creates
+    BillLog "1" --> "*" BillLogRoommate : contains
     Listing "1" --> "*" Appointment : has
+    Database ..> User : manages
+    Database ..> Listing : manages
+    Auth ..> Database : uses
+    Auth ..> User : authenticates
 ```
 
 ### UML Sequence Diagrams
@@ -560,6 +644,760 @@ sequenceDiagram
     A->>S: GET api/fetch_messages?user_a=A&user_b=B
     S->>DB: SELECT messages WHERE (sender=A AND receiver=B) OR (sender=B AND receiver=A)
     S-->>A: {messages: [...]}
+```
+
+#### User Registration & Login
+
+```mermaid
+sequenceDiagram
+    actor U as User
+    participant B as Browser
+    participant S as Server
+    participant DB as MySQL
+
+    Note over U,B: Registration Flow
+    U->>B: Fill registration form
+    B->>S: POST /auth/register.php {full_name, email, city, password}
+    S->>S: Validate input (length, format)
+    S->>DB: SELECT COUNT(*) WHERE email = ?
+    DB-->>S: 0 (not taken)
+    S->>S: password_hash(password, PASSWORD_BCRYPT)
+    S->>DB: INSERT INTO users (full_name, email, city, password_hash, role)
+    DB-->>S: Success
+    S->>S: session_regenerate_id()
+    S->>S: $_SESSION['user_id'] = new_id
+    S-->>B: 302 Redirect to index.php?registered=1
+    B-->>T: Dashboard with flash message
+
+    Note over U,B: Login Flow
+    U->>B: Fill login form + check Remember Me
+    B->>S: POST /auth/login.php {email, password, remember}
+    S->>DB: SELECT * FROM users WHERE email = ?
+    DB-->>S: User row
+    S->>S: password_verify(password, hash)
+    alt Valid password
+        S->>S: session_regenerate_id()
+        S->>S: $_SESSION['user_id'] = user_id
+        opt Remember Me checked
+            S->>S: Generate random token
+            S->>S: hash(token)
+            S->>DB: UPDATE users SET remember_token_hash = ?
+            S->>B: Set-Cookie: remember_token=token; Max-Age=30d
+        end
+        S-->>B: 302 Redirect to index.php?signed_in=1
+    else Invalid password
+        S-->>B: 302 Redirect to login.php?error=1
+    end
+```
+
+### UML Activity Diagrams
+
+#### Booking Activity Flow
+
+```mermaid
+flowchart TD
+    Start([Start]) --> A[User selects listing]
+    A --> B[User picks date]
+    B --> C[Fetch available slots from API]
+    C --> D{Slots available?}
+    D -->|No| E[Display: No slots available]
+    E --> End1([End])
+    D -->|Yes| F[Display time slot grid]
+    F --> G[User clicks a slot]
+    G --> H[Send booking request to API]
+    H --> I{Conflict check}
+    I -->|Conflict exists| J[Return error: Slot already booked]
+    J --> F
+    I -->|No conflict| K{Listing available?}
+    K -->|No| L[Return error: Listing not available]
+    L --> End2([End])
+    K -->|Yes| M[INSERT appointment with PENDING status]
+    M --> N[COMMIT transaction]
+    N --> O[Return success + booking ID]
+    O --> P[Display booking confirmation]
+    P --> End3([End])
+```
+
+#### Connection Request Activity Flow
+
+```mermaid
+flowchart TD
+    Start([Start]) --> A[User A selects User B]
+    A --> B[User A clicks Send Request]
+    B --> C[API: INSERT connection_request<br/>sender=A, receiver=B, status=PENDING]
+    C --> D[Return: Request sent]
+    D --> E[User B sees incoming request]
+    E --> F{User B wants to connect?}
+    F -->|No| G[User B ignores request]
+    G --> H[Status remains PENDING]
+    H --> End1([End])
+    F -->|Yes| I[User B sends request back<br/>sender=B, receiver=A]
+    I --> J{Mutual request exists?}
+    J -->|No| K[INSERT new PENDING row]
+    K --> L[Return: Request pending]
+    L --> End2([End])
+    J -->|Yes| M[UPDATE both rows to ACCEPTED]
+    M --> N[Return: Connected!]
+    N --> O[Chat module unlocked for both users]
+    O --> End3([End])
+```
+
+#### Bill Split Activity Flow
+
+```mermaid
+flowchart TD
+    Start([Start]) --> A[User enters bill name & amount]
+    A --> B[User adds roommate rows<br/>name + income]
+    B --> C{All incomes > 0?}
+    C -->|No| D[Show error: Income required]
+    D --> B
+    C -->|Yes| E[Calculate combined income]
+    E --> F[For each roommate:<br/>share = income / combined × total]
+    F --> G[Display breakdown table]
+    G --> H{Save to database?}
+    H -->|No| I[Display results only]
+    I --> End1([End])
+    H -->|Yes| J[Authenticate user]
+    J --> K[BEGIN TRANSACTION]
+    K --> L[INSERT INTO bill_logs]
+    L --> M[INSERT INTO bill_log_roommates<br/>for each roommate]
+    M --> N[COMMIT]
+    N --> O[Return success + bill_log_id]
+    O --> P[Display saved confirmation]
+    P --> End2([End])
+```
+
+#### User Registration Activity Flow
+
+```mermaid
+flowchart TD
+    Start([Start]) --> A[User opens register page]
+    A --> B[User fills: name, email, city, password]
+    B --> C[Submit form]
+    C --> D{All fields valid?}
+    D -->|No| E[Show validation errors]
+    E --> B
+    D -->|Yes| F{Email already exists?}
+    F -->|Yes| G[Show error: Email taken]
+    G --> B
+    F -->|No| H{Password >= 8 chars?}
+    H -->|No| I[Show error: Password too short]
+    I --> B
+    H -->|Yes| J[Hash password with bcrypt]
+    J --> K[INSERT INTO users]
+    K --> L[Start PHP session]
+    L --> M[Set session user_id]
+    M --> N[Redirect to dashboard]
+    N --> End([End])
+```
+
+### UML State Machine Diagrams
+
+#### Listing Status State Machine
+
+```mermaid
+stateDiagram-v2
+    [*] --> AVAILABLE : Landlord creates listing
+
+    AVAILABLE --> BOOKED : Tenant books viewing
+    AVAILABLE --> HIDDEN : Landlord hides listing
+    AVAILABLE --> [*] : Landlord deletes listing
+
+    BOOKED --> AVAILABLE : Viewing cancelled
+    BOOKED --> BOOKED : Another booking added
+    BOOKED --> HIDDEN : Landlord hides listing
+
+    HIDDEN --> AVAILABLE : Landlord unhides listing
+    HIDDEN --> [*] : Landlord deletes listing
+
+    state AVAILABLE {
+        [*] --> CanBeSearched
+        CanBeSearched : Shown in marketplace
+        CanBeSearched : Accepts new bookings
+    }
+
+    state BOOKED {
+        [*] --> HasAppointments
+        HasAppointments : One or more active bookings
+        HasAppointments : Still searchable
+    }
+
+    state HIDDEN {
+        [*] --> NotVisible
+        NotVisible : Not shown in search
+        NotVisible : Cannot be booked
+    }
+```
+
+#### Appointment Booking Status State Machine
+
+```mermaid
+stateDiagram-v2
+    [*] --> PENDING : Tenant books slot
+
+    PENDING --> CONFIRMED : Landlord confirms
+    PENDING --> CANCELLED : Tenant cancels
+    PENDING --> CANCELLED : Time slot passes (auto)
+
+    CONFIRMED --> CANCELLED : Either party cancels
+    CONFIRMED --> COMPLETED : Viewing happens
+
+    CANCELLED --> [*]
+    COMPLETED --> [*]
+
+    state PENDING {
+        [*] --> AwaitingConfirmation
+        AwaitingConfirmation : Slot reserved
+        AwaitingConfirmation : Other users cannot book same slot
+    }
+
+    state CONFIRMED {
+        [*] --> Locked
+        Locked : Guaranteed time slot
+        Locked : Calendar invite sent
+    }
+
+    state CANCELLED {
+        [*] --> Released
+        Released : Slot freed for others
+    }
+```
+
+#### Connection Request State Machine
+
+```mermaid
+stateDiagram-v2
+    [*] --> PENDING : User A sends request
+
+    PENDING --> ACCEPTED : User B sends request back (mutual)
+    PENDING --> REJECTED : User B explicitly rejects
+    PENDING --> CANCELLED : User A cancels request
+
+    ACCEPTED --> DISCONNECTED : Either user disconnects
+    ACCEPTED --> BLOCKED : Either user blocks
+
+    DISCONNECTED --> [*]
+    REJECTED --> [*]
+    CANCELLED --> [*]
+    BLOCKED --> [*]
+
+    state PENDING {
+        [*] --> OneSided
+        OneSided : A→B exists
+        OneSided : Chat NOT unlocked
+    }
+
+    state ACCEPTED {
+        [*] --> Mutual
+        Mutual : Both A→B and B→A exist
+        Mutual : Chat IS unlocked
+    }
+```
+
+#### User Session State Machine
+
+```mermaid
+stateDiagram-v2
+    [*] --> Anonymous : App loads
+
+    Anonymous --> Authenticating : Submit login form
+    Authenticating --> Authenticated : Valid credentials
+    Authenticating --> Anonymous : Invalid credentials
+
+    Authenticated --> Authenticated : Active session (page loads)
+    Authenticated --> TokenRefresh : Remember-me cookie valid
+    TokenRefresh --> Authenticated : Token refreshed
+
+    Authenticated --> Anonymous : Logout / Session expires
+    Authenticated --> Anonymous : Cookie expires (30 days)
+
+    state Anonymous {
+        [*] --> GuestAccess
+        GuestAccess : Can view landing page
+        GuestAccess : Can register
+        GuestAccess : Redirected to login for protected pages
+    }
+
+    state Authenticating {
+        [*] --> PasswordCheck
+        PasswordCheck : bcrypt verify
+        PasswordCheck --> SessionCreate : Match
+        PasswordCheck --> ErrorDisplay : No match
+    }
+
+    state Authenticated {
+        [*] --> FullAccess
+        FullAccess : All modules available
+        FullAccess : RBAC enforced
+    }
+```
+
+#### Message Delivery State Machine
+
+```mermaid
+stateDiagram-v2
+    [*] --> Composing : User types message
+
+    Composing --> Sending : Click Send / Press Enter
+    Sending --> Sent : Server returns success
+    Sending --> Failed : Server returns error
+
+    Sent --> Delivered : Peer's poll fetches message
+    Delivered --> Read : Peer views message
+
+    Failed --> Composing : User retries
+    Failed --> Discarded : User abandons
+
+    state Composing {
+        [*] --> Editing
+        Editing : Text in textarea
+        Editing : Can edit freely
+    }
+
+    state Sending {
+        [*] --> Uploading
+        Uploading : POST to send_message API
+    }
+
+    state Sent {
+        [*] --> Stored
+        Stored : In messages table
+        Stored : sent_at timestamp set
+    }
+```
+
+### UML Component Diagram
+
+```mermaid
+graph TB
+    subgraph Presentation["Presentation Layer"]
+        Dashboard["Dashboard<br/>(index.php)"]
+        AuthPages["Auth Pages<br/>(login, register, logout)"]
+        MarketplaceUI["Marketplace UI<br/>(listings.php)"]
+        BillSplitUI["Bill Split UI<br/>(expenses.php)"]
+        BookingUI["Booking UI<br/>(booking.php)"]
+        ListingUI["Listing Upload UI<br/>(create_listing.php)"]
+        SocialUI["Social UI<br/>(chat, connect, review)"]
+        CSS["CSS Stylesheet<br/>(style.css)"]
+        JS["JavaScript Modules<br/>(listings.js, expenses.js, etc.)"]
+    end
+
+    subgraph Application["Application Layer"]
+        Layout["Layout Engine<br/>(layout.php)"]
+        AuthCore["Auth Core<br/>(auth.php)"]
+        Helpers["Helpers<br/>(helpers.php)"]
+        Bootstrap["Bootstrap<br/>(bootstrap.php)"]
+    end
+
+    subgraph API["API Endpoints"]
+        ListingsAPI["Listings API<br/>(?api=listings)"]
+        CalculateAPI["Calculate API<br/>(?api=calculate)"]
+        SlotsAPI["Slots API<br/>(?api=available_slots)"]
+        BookAPI["Book API<br/>(?api=book_viewing)"]
+        ConnectAPI["Connect API<br/>(connect_request.php)"]
+        MessageAPI["Message API<br/>(send_message.php)"]
+        FetchMsgAPI["Fetch Messages API<br/>(fetch_messages.php)"]
+        ReviewAPI["Review API<br/>(submit_review.php)"]
+        ReviewsAPI["Reviews Agg API<br/>(get_user_reviews.php)"]
+    end
+
+    subgraph Data["Data Layer"]
+        DB["PDO Database<br/>(database.php)"]
+        MySQL[("MySQL 8.0<br/>roommate_rental")]
+        FileUpload["File Upload<br/>(uploads/)"]
+    end
+
+    Dashboard --> Layout
+    AuthPages --> Layout
+    MarketplaceUI --> Layout
+    MarketplaceUI --> JS
+    BillSplitUI --> Layout
+    BillSplitUI --> JS
+    BookingUI --> Layout
+    BookingUI --> JS
+    ListingUI --> Layout
+    ListingUI --> JS
+    SocialUI --> Layout
+    SocialUI --> JS
+
+    Layout --> AuthCore
+    Layout --> Helpers
+    Layout --> Bootstrap
+
+    MarketplaceUI --> ListingsAPI
+    BillSplitUI --> CalculateAPI
+    BookingUI --> SlotsAPI
+    BookingUI --> BookAPI
+    SocialUI --> ConnectAPI
+    SocialUI --> MessageAPI
+    SocialUI --> FetchMsgAPI
+    SocialUI --> ReviewAPI
+    SocialUI --> ReviewsAPI
+    ListingUI --> FileUpload
+
+    ListingsAPI --> DB
+    CalculateAPI --> DB
+    SlotsAPI --> DB
+    BookAPI --> DB
+    ConnectAPI --> DB
+    MessageAPI --> DB
+    FetchMsgAPI --> DB
+    ReviewAPI --> DB
+    ReviewsAPI --> DB
+
+    DB --> MySQL
+```
+
+### UML Deployment Diagram
+
+```mermaid
+graph TB
+    subgraph Client["Client Tier"]
+        Browser["Web Browser<br/>(Chrome / Firefox / Edge)"]
+        Mobile["Mobile Browser"]
+    end
+
+    subgraph Server["Server Tier"]
+        Apache["Apache / PHP Built-in Server<br/>Port 8000"]
+        PHP["PHP 8.1 Runtime<br/>PDO + Session + File Upload"]
+    end
+
+    subgraph Database["Data Tier"]
+        MySQL["MySQL 8.0<br/>Port 3307<br/>Database: roommate_rental"]
+    end
+
+    subgraph Storage["File Storage"]
+        Uploads["Uploads Directory<br/>Room Images (JPG/PNG)"]
+    end
+
+    subgraph External["External Services"]
+        GitHub["GitHub<br/>Version Control"]
+        Jira["Jira<br/>Project Management"]
+    end
+
+    Browser -->|HTTP Request| Apache
+    Mobile -->|HTTP Request| Apache
+    Apache --> PHP
+    PHP --> MySQL
+    PHP --> Uploads
+    PHP -->|Session Cookies| Browser
+
+    Apache -->|Static Assets| Browser
+    Uploads -->|Image URLs| Apache
+
+    Developer["Developer<br/>(Dadhichi / Shawki / Plabon)"] -->|git push| GitHub
+    GitHub -->|CI/CD| Jira
+```
+
+### UML Communication Diagram
+
+#### Booking Communication
+
+```mermaid
+graph LR
+    subgraph "1: User selects slot"
+        T1[Tenant] -->|clicks slot| B1[Browser]
+    end
+
+    subgraph "2: Fetch slots"
+        B2[Browser] -->|GET api/available_slots| S1[Server]
+        S1 -->|SELECT| DB1[(MySQL)]
+        DB1 -->|booked slots| S1
+        S1 -->|JSON response| B2
+    end
+
+    subgraph "3: Book slot"
+        B3[Browser] -->|POST api/book_viewing| S2[Server]
+        S2 -->|BEGIN + LOCK| DB2[(MySQL)]
+        S2 -->|check conflict| DB2
+        S2 -->|INSERT appointment| DB2
+        S2 -->|COMMIT| DB2
+        DB2 -->|success| S2
+        S2 -->|JSON {success}| B3
+    end
+
+    subgraph "4: Confirm"
+        B4[Browser] -->|show confirmation| T4[Tenant]
+    end
+
+    T1 -.-> B1
+    B1 -.-> B2
+    B2 -.-> B3
+    B3 -.-> B4
+```
+
+#### Chat Communication
+
+```mermaid
+graph LR
+    subgraph "1: Send message"
+        A1[User A] -->|type + send| B1[Browser A]
+        B1 -->|POST send_message| S1[Server]
+        S1 -->|INSERT| DB1[(MySQL)]
+        DB1 -->|success| S1
+        S1 -->|{success: true}| B1
+    end
+
+    subgraph "2: Poll for messages"
+        B2[Browser B] -->|GET fetch_messages every 4s| S2[Server]
+        S2 -->|SELECT| DB2[(MySQL)]
+        DB2 -->|messages| S2
+        S2 -->|{messages: [...]}| B2
+        B2 -->|render| A2[User B]
+    end
+
+    A1 -.-> B1
+    B1 -.-> B2
+    B2 -.-> A2
+```
+
+### UML Timing Diagram
+
+#### Booking Slot Timeline
+
+```mermaid
+gantt
+    title Booking Slot Timeline (Listing #1)
+    dateFormat  HH:mm
+    axisFormat  %H:%M
+
+    section Slot 10:00-10:30
+    Confirmed (Ayesha) :done, 10:00, 30min
+
+    section Slot 10:30-11:00
+    Available :active, 10:30, 30min
+
+    section Slot 11:00-11:30
+    Available :active, 11:00, 30min
+
+    section Slot 14:00-14:30
+    Pending (Nusrat) :crit, 14:00, 30min
+
+    section Slot 14:30-15:00
+    Available :active, 14:30, 30min
+```
+
+#### User Session Timeline
+
+```mermaid
+gantt
+    title User Session Lifecycle
+    dateFormat  X
+    axisFormat  %s
+
+    section Anonymous
+    Guest browsing :done, 0, 5
+
+    section Authenticating
+    Login form submit :active, 5, 1
+
+    section Authenticated
+    Full access :active, 6, 20
+    Token refresh :milestone, 16, 0
+
+    section Session End
+    Logout :done, 26, 1
+```
+
+#### Connection State Timeline
+
+```mermaid
+gantt
+    title Connection State Timeline (User A ↔ User B)
+    dateFormat  X
+    axisFormat  %s
+
+    section A→B
+    PENDING :done, 0, 5
+    ACCEPTED :active, 5, 50
+
+    section B→A
+    (not yet sent) :done, 0, 3
+    PENDING :done, 3, 2
+    ACCEPTED :active, 5, 50
+
+    section Chat
+    Locked :done, 0, 5
+    Unlocked :active, 5, 50
+```
+
+### UML Object Diagram
+
+#### Snapshot: User Profiles at Runtime
+
+```mermaid
+graph TB
+    subgraph "Object Diagram — Seeded Users"
+        U1["User#1<br/>id: 1<br/>full_name: 'Ayesha Rahman'<br/>email: 'ayesha@example.com'<br/>city: 'Dhaka'<br/>role: 'tenant'"]
+        U2["User#2<br/>id: 2<br/>full_name: 'Rakib Hasan'<br/>email: 'rakib@example.com'<br/>city: 'Dhaka'<br/>role: 'landlord'"]
+        U3["User#3<br/>id: 3<br/>full_name: 'Nusrat Karim'<br/>email: 'nusrat@example.com'<br/>city: 'Dhaka'<br/>role: 'tenant'"]
+        U4["User#4<br/>id: 4<br/>full_name: 'Sajid Ahmed'<br/>email: 'sajid@example.com'<br/>city: 'Chittagong'<br/>role: 'landlord'"]
+        U5["User#5<br/>id: 5<br/>full_name: 'Tania Akter'<br/>email: 'tania@example.com'<br/>city: 'Dhaka'<br/>role: 'tenant'"]
+    end
+
+    subgraph "Object Diagram — Listings"
+        L1["Listing#1<br/>id: 1<br/>landlord_id: 2<br/>title: 'Private Room near Dhanmondi Lake'<br/>rent: 15000<br/>room_type: 'private'<br/>status: 'AVAILABLE'"]
+        L2["Listing#2<br/>id: 2<br/>landlord_id: 3<br/>title: 'Shared Room in Bashundhara'<br/>rent: 8500<br/>room_type: 'shared'<br/>status: 'AVAILABLE'"]
+        L3["Listing#3<br/>id: 3<br/>landlord_id: 5<br/>title: 'Private Room in Mirpur DOHS'<br/>rent: 12000<br/>room_type: 'private'<br/>status: 'AVAILABLE'"]
+    end
+
+    subgraph "Object Diagram — Appointments"
+        A1["Appointment#1<br/>id: 1<br/>listing_id: 1<br/>tenant_id: 1<br/>start_time: 2026-07-05 10:00<br/>status: 'CONFIRMED'"]
+        A2["Appointment#2<br/>id: 2<br/>listing_id: 1<br/>tenant_id: 3<br/>start_time: 2026-07-05 14:00<br/>status: 'PENDING'"]
+    end
+
+    subgraph "Object Diagram — Connections"
+        CR1["ConnectionRequest#1<br/>sender_id: 1<br/>receiver_id: 2<br/>status: 'ACCEPTED'"]
+        CR2["ConnectionRequest#2<br/>sender_id: 2<br/>receiver_id: 1<br/>status: 'ACCEPTED'"]
+    end
+
+    subgraph "Object Diagram — Messages"
+        M1["Message#1<br/>sender_id: 1<br/>receiver_id: 2<br/>message_text: 'Hi Rakib, the room looks good.'<br/>sent_at: 2026-07-01"]
+        M2["Message#2<br/>sender_id: 2<br/>receiver_id: 1<br/>message_text: 'I am free this evening.'<br/>sent_at: 2026-07-01"]
+    end
+
+    subgraph "Object Diagram — Reviews"
+        R1["UserReview#1<br/>reviewer_id: 1<br/>reviewee_id: 2<br/>cleanliness: 5<br/>communication: 4<br/>feedback: 'Reliable and easy to coordinate with.'"]
+    end
+
+    U1 -->|owns| L4["UserProfile#1<br/>cleanliness: 5<br/>sleep: 23:00-07:00<br/>wfh: 'hybrid'<br/>budget: 8000-18000"]
+    U2 -->|owns| L5["UserProfile#2<br/>cleanliness: 4<br/>sleep: 23:30-07:30<br/>wfh: 'yes'<br/>budget: 9000-17000"]
+    U2 -->|owns| L1
+    U3 -->|owns| L2
+    U1 -->|books| A1
+    U3 -->|books| A2
+    A1 -.->|at| L1
+    A2 -.->|at| L1
+    CR1 -.->|between| U1
+    CR2 -.->|between| U2
+    M1 -.->|between| U1
+    M2 -.->|between| U2
+    R1 -.->|about| U2
+```
+
+### UML Package Diagram
+
+```mermaid
+graph TB
+    subgraph Presentation["presentation"]
+        Dashboard["index.php"]
+        AuthPages["auth/*"]
+        MarketplaceUI["marketplace/public/*"]
+        BillSplitUI["bill-split/public/*"]
+        BookingUI["booking/public/*"]
+        ListingUI["listing-upload/public/*"]
+        SocialUI["social/frontend/*"]
+    end
+
+    subgraph API["api"]
+        ListingsAPI["marketplace/public/listings.php?api"]
+        CalculateAPI["bill-split/public/expenses.php?api"]
+        BookingAPI["booking/public/booking.php?api"]
+        SocialAPI["social/api/*"]
+    end
+
+    subgraph Core["core"]
+        Layout["layout.php"]
+        AuthCore["auth.php"]
+        Helpers["helpers.php"]
+        Database["database.php"]
+        Bootstrap["bootstrap.php"]
+    end
+
+    subgraph Data["data"]
+        MySQL[("MySQL<br/>roommate_rental")]
+        FileStorage["uploads/"]
+    end
+
+    subgraph External["external"]
+        CSS["assets/css/*"]
+        JS["assets/js/*"]
+    end
+
+    Presentation --> External
+    Presentation --> Core
+    API --> Core
+    API --> Data
+    Core --> Data
+
+    MarketplaceUI -.-> ListingsAPI
+    BillSplitUI -.-> CalculateAPI
+    BookingUI -.-> BookingAPI
+    SocialUI -.-> SocialAPI
+```
+
+### UML Composite Structure Diagram
+
+```mermaid
+graph TB
+    subgraph "RoommateSync System"
+        subgraph "Presentation"
+            UI["Web Pages<br/>(PHP Templates)"]
+            Styles["CSS Styles"]
+            Scripts["JavaScript"]
+        end
+
+        subgraph "Application"
+            LayoutComp["Layout Component"]
+            AuthComp["Auth Component"]
+            HelperComp["Helper Component"]
+        end
+
+        subgraph "Data Access"
+            PDOComp["PDO Singleton"]
+            QueryBuilder["Query Builder"]
+        end
+
+        subgraph "Database"
+            ConnectionPool["Connection Pool"]
+            MySQL[("MySQL")]
+        end
+
+        UI --> LayoutComp
+        UI --> AuthComp
+        LayoutComp --> HelperComp
+        AuthComp --> PDOComp
+        Scripts -->|fetch()| QueryBuilder
+        QueryBuilder --> PDOComp
+        PDOComp --> ConnectionPool
+        ConnectionPool --> MySQL
+    end
+
+    subgraph "External Interfaces"
+        HTTP["HTTP/1.1"]
+        FileSystem["File System"]
+    end
+
+    UI <--> HTTP
+    UI <--> FileSystem
+```
+
+### UML Profile Diagram (Stereotypes)
+
+```mermaid
+graph LR
+    subgraph Stereotypes
+        API["<<api>>"]
+        UI["<<ui>>"]
+        DB["<<database>>"]
+        AUTH["<<auth>>"]
+        MODEL["<<model>>"]
+        HELPER["<<helper>>"]
+    end
+
+    subgraph Applied To
+        APIEndpoints["listings.php?api<br/>expenses.php?api<br/>booking.php?api<br/>connect_request.php<br/>send_message.php<br/>fetch_messages.php<br/>submit_review.php<br/>get_user_reviews.php"]
+        UIPages["index.php<br/>login.php<br/>register.php<br/>listings.php<br/>expenses.php<br/>booking.php<br/>create_listing.php<br/>chat.php<br/>connect.php<br/>review_form.php"]
+        DBFiles["database.php<br/>schema.sql<br/>seed.sql"]
+        AUTHFiles["auth.php<br/>login.php<br/>register.php<br/>logout.php"]
+        CoreFiles["helpers.php<br/>bootstrap.php<br/>layout.php"]
+    end
+
+    API -.-> APIEndpoints
+    UI -.-> UIPages
+    DB -.-> DBFiles
+    AUTH -.-> AUTHFiles
+    HELPER -.-> CoreFiles
 ```
 
 ---
