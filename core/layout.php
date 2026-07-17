@@ -8,14 +8,7 @@ require_once __DIR__ . '/auth.php';
 
 function rm_base_path(): string
 {
-    static $base = null;
-    if ($base !== null) {
-        return $base;
-    }
-    $scriptDir = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
-    $docRoot = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
-    $base = str_replace($docRoot, '', $scriptDir);
-    return $base;
+    return '';
 }
 
 function rm_url(string $path): string

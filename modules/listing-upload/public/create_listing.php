@@ -276,6 +276,6 @@ layout_header('Create Rental Listing', [
         </section>
     </div>
 
-<script src="assets/js/create_listing.js"></script>
+<script src="<?= rm_url('assets/js/create_listing.js') ?>"></script>
 <?php
 layout_footer();

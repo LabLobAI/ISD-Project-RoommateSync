@@ -169,6 +169,6 @@ layout_header('Book Viewing', [
         </section>
     </div>
 
-<script src="assets/js/booking.js"></script>
+<script src="<?= rm_url('assets/js/booking.js') ?>"></script>
 <?php
 layout_footer();
