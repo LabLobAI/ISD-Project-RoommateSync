@@ -91,6 +91,11 @@ function e(?string $value): string
     return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
 }
 
+function h(?string $value): string
+{
+    return e($value);
+}
+
 function post_value(string $key, mixed $default = ''): mixed
 {
     return $_POST[$key] ?? $default;

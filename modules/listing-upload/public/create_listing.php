@@ -7,6 +7,12 @@ require_once __DIR__ . '/../../../core/helpers.php';
 require_once __DIR__ . '/../../../core/auth.php';
 require_once __DIR__ . '/../../../core/layout.php';
 
+$authUser = auth_require_login();
+if (!auth_is_landlord((int) $authUser['id'])) {
+    header('Location: ' . rm_url('index.php') . '?error=' . urlencode('Only landlords can create listings.'));
+    exit;
+}
+
 $errors = [];
 $successMessage = '';
 $createdListing = null;
@@ -168,12 +174,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$authUser = auth_require_login();
-if (!auth_is_landlord((int) $authUser['id'])) {
-    header('Location: /index.php?error=' . urlencode('Only landlords can create listings.'));
-    exit;
-}
-
 layout_header('Create Rental Listing', [
     'description' => 'Add room details, validate the uploaded image, and save the listing path into the common roommate_rental MySQL database.',
 ]);
@@ -301,10 +301,6 @@ layout_header('Create Rental Listing', [
         </section>
     </div>
 
+<script src="assets/js/create_listing.js"></script>
 <?php
 layout_footer();
-?>
-
-<script src="assets/js/create_listing.js"></script>
-</body>
-</html>

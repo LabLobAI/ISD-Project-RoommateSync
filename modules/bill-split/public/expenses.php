@@ -146,10 +146,6 @@ layout_header('Bill Split Calculator', [
         </section>
     </div>
 
+<script src="assets/js/expenses.js"></script>
 <?php
 layout_footer();
-?>
-
-<script src="assets/js/expenses.js"></script>
-</body>
-</html>

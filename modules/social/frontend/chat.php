@@ -27,9 +27,9 @@ layout_header('Chat', [
                 <p class="lede">A polling chat window that unlocks only for accepted connections.</p>
             </div>
             <nav class="header-links" aria-label="Social navigation">
-                <a class="ghost-link" href="/index.php">Home</a>
-                <a class="ghost-link" href="/modules/social/frontend/review_form.php">Review</a>
-                <a class="ghost-link" href="/modules/social/frontend/connect.php">Connect</a>
+                <a class="ghost-link" href="<?= rm_url('index.php') ?>">Home</a>
+                <a class="ghost-link" href="<?= rm_url('modules/social/frontend/review_form.php') ?>">Review</a>
+                <a class="ghost-link" href="<?= rm_url('modules/social/frontend/connect.php') ?>">Connect</a>
             </nav>
         </header>
 
@@ -72,10 +72,6 @@ layout_header('Chat', [
         </div>
     </div>
 
-<?php
-layout_footer();
-?>
-
 <script>
 const peerSelect = document.getElementById('peerId');
 const senderId = Number(document.getElementById('senderId').value);
@@ -83,6 +79,12 @@ const statusBox = document.getElementById('chatStatus');
 const stream = document.getElementById('messageStream');
 const messageForm = document.getElementById('messageForm');
 const messageText = document.getElementById('messageText');
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
 
 function renderMessages(messages) {
     if (!messages.length) {
@@ -96,9 +98,9 @@ function renderMessages(messages) {
             <div class="stream-item" style="margin-left:${mine ? '12%' : '0'}; margin-right:${mine ? '0' : '12%'}; background:${mine ? 'rgba(56, 189, 248, 0.1)' : 'rgba(255, 255, 255, 0.04)'};">
                 <div class="stream-meta">
                     <span>${mine ? 'You' : 'Them'}</span>
-                    <span>${message.sent_at}</span>
+                    <span>${escapeHtml(message.sent_at)}</span>
                 </div>
-                <div>${message.message_text}</div>
+                <div>${escapeHtml(message.message_text)}</div>
             </div>
         `;
     }).join('');
@@ -151,5 +153,5 @@ peerSelect.addEventListener('change', loadMessages);
 loadMessages();
 setInterval(loadMessages, 4000);
 </script>
-</body>
-</html>
+<?php
+layout_footer();
