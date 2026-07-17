@@ -84,6 +84,7 @@ layout_header('Rental Marketplace', [
 
         <div class="page-content">
             <aside class="card filter-panel">
+                <p class="card-kicker">Narrow results</p>
                 <h2 class="card-title">Filters</h2>
 
                 <div class="form-group">

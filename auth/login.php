@@ -31,9 +31,9 @@ layout_header('Sign in - RoommateSync', [
 
     <div class="shell auth-shell">
         <section class="auth-card">
-            <p class="eyebrow">RoommateSync</p>
-            <h1>Sign in</h1>
-            <p class="lede">Welcome back. Sign in to access your dashboard.</p>
+            <p class="eyebrow">Welcome back</p>
+            <h1>Sign in to your account</h1>
+            <p class="lede">Access your dashboard, listings, and connections.</p>
 
             <?php if ($errors): ?>
                 <div class="flash-message error"><?= h(implode(' ', $errors)) ?></div>

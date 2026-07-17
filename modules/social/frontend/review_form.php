@@ -37,7 +37,8 @@ layout_header('Peer Review', [
 
         <div class="page-content">
             <article class="card">
-                <h2 class="card-title">Write a Review</h2>
+                <p class="card-kicker">Write review</p>
+                <h2 class="card-title">New Review</h2>
 
                 <form id="reviewForm">
                     <input type="hidden" id="reviewerId" value="<?= (int) $currentUserId ?>">
@@ -76,7 +77,8 @@ layout_header('Peer Review', [
             </article>
 
             <aside class="card">
-                <h2 class="card-title" id="summaryName">Review Summary</h2>
+                <p class="card-kicker">Review summary</p>
+                <h2 class="card-title" id="summaryName">Loading...</h2>
 
                 <div class="review-metrics">
                     <div class="metric">

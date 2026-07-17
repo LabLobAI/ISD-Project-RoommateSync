@@ -32,9 +32,9 @@ layout_header('Create account - RoommateSync', [
 
     <div class="shell auth-shell">
         <section class="auth-card">
-            <p class="eyebrow">RoommateSync</p>
-            <h1>Create account</h1>
-            <p class="lede">Create your account and start finding a roommate.</p>
+            <p class="eyebrow">Get started</p>
+            <h1>Create your account</h1>
+            <p class="lede">Join the community and start finding your perfect roommate.</p>
 
             <?php if ($errors): ?>
                 <div class="flash-message error"><?= h(implode(' ', $errors)) ?></div>

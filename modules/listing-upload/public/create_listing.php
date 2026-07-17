@@ -164,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 layout_header('Create Rental Listing', [
-    'description' => 'Add room details, validate the uploaded image, and save the listing path into the common roommate_rental MySQL database.',
+    'description' => 'Add room details, upload a photo, and publish your listing to the marketplace.',
 ]);
 ?>
 

@@ -117,7 +117,7 @@ layout_header('Bill Split Calculator', [
         <header class="page-header">
             <div>
                 <h1>Fair Household Bill Split</h1>
-                <p class="lede">Formula: Individual Share = (Individual Income / Combined Income) × Total Bill</p>
+                <p class="lede">Each person pays based on their income share. Add roommates, enter the bill, and see who owes what.</p>
             </div>
         </header>
 

@@ -35,9 +35,8 @@ layout_header('Connect', [
 
         <div class="page-content">
             <article class="card">
+                <p class="card-kicker">Request connection</p>
                 <h2 class="card-title">Find a Roommate</h2>
-
-                <p class="muted">Send a request. When they send one back, you're matched and chat unlocks.</p>
 
                 <div class="form-group">
                     <label for="receiverId">Connect with</label>
@@ -56,6 +55,17 @@ layout_header('Connect', [
 
                 <div id="connectStatus" class="status-box">Ready to connect.</div>
             </article>
+
+            <aside class="card">
+                <p class="card-kicker">How it works</p>
+                <h2 class="card-title">Connection flow</h2>
+
+                <div style="display:grid; gap:12px;">
+                    <div class="status-box">1. One person sends a request.</div>
+                    <div class="status-box">2. The other person sends one back.</div>
+                    <div class="status-box">3. Both rows become accepted and chat unlocks.</div>
+                </div>
+            </aside>
         </div>
     </div>
 
