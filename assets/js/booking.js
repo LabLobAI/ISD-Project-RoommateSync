@@ -67,7 +67,9 @@ async function loadSlots(clearMessage = true) {
 async function bookSlot(time) {
     document.querySelectorAll('.slot-btn').forEach(button => button.classList.remove('selected'));
     const selectedButton = document.querySelector(`.slot-btn[data-time="${time}"]`);
-    selectedButton.classList.add('selected');
+    if (selectedButton) {
+        selectedButton.classList.add('selected');
+    }
 
     bookingMessage.innerHTML = '<div class="status-box">Placing your booking...</div>';
 

@@ -37,13 +37,5 @@ function current_user_id(): int
         return (int) $_SESSION['user_id'];
     }
 
-    if (isset($_GET['user_id'])) {
-        return max(1, (int) $_GET['user_id']);
-    }
-
-    if (isset($_POST['user_id'])) {
-        return max(1, (int) $_POST['user_id']);
-    }
-
-    return 1;
+    return 0;
 }

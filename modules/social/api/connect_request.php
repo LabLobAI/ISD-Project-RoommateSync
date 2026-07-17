@@ -47,7 +47,7 @@ try {
 
     if (!$row) {
         try {
-            $ins = $db->prepare('INSERT INTO connection_requests (sender_id, receiver_id, status) VALUES (:s, :r, "PENDING")');
+            $ins = $db->prepare('INSERT INTO connection_requests (sender_id, receiver_id, status) VALUES (:s, :r, \'PENDING\')');
             $ins->execute([':s' => $sender, ':r' => $receiver]);
             http_response_code(201);
             echo json_encode(['status' => 'PENDING']);
@@ -64,11 +64,11 @@ try {
 
     $status = $row['status'];
     if ($status === 'PENDING') {
-        $upd = $db->prepare('UPDATE connection_requests SET status = "ACCEPTED" WHERE sender_id = :b AND receiver_id = :a');
+        $upd = $db->prepare("UPDATE connection_requests SET status = 'ACCEPTED' WHERE sender_id = :b AND receiver_id = :a");
         $upd->execute([':b' => $receiver, ':a' => $sender]);
 
         try {
-            $ins2 = $db->prepare('INSERT INTO connection_requests (sender_id, receiver_id, status) VALUES (:s, :r, "ACCEPTED")');
+            $ins2 = $db->prepare("INSERT INTO connection_requests (sender_id, receiver_id, status) VALUES (:s, :r, 'ACCEPTED')");
             $ins2->execute([':s' => $sender, ':r' => $receiver]);
         } catch (PDOException $e) {
             // Ignore duplicate key error for the reverse entry

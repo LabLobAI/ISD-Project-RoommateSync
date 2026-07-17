@@ -497,6 +497,10 @@ h1 {
 /* ============================
    PAGE LAYOUT
    ============================ */
+.site-main {
+    min-height: calc(100vh - 64px);
+}
+
 .page-shell {
     width: min(1200px, calc(100% - 32px));
     margin: 0 auto;
@@ -884,6 +888,13 @@ h1 {
     background: var(--accent-glow);
     border-color: var(--accent);
     color: var(--text);
+}
+
+.slot-btn.selected {
+    background: var(--accent);
+    border-color: var(--accent-strong);
+    color: #031525;
+    box-shadow: 0 0 16px var(--accent-glow);
 }
 
 .slot-btn.booked {

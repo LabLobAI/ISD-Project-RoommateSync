@@ -5,6 +5,12 @@ const addRoommateButton = document.getElementById('addRoommate');
 const saveBillButton = document.getElementById('saveBill');
 const expenseResult = document.getElementById('expenseResult');
 
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
 function addRoommate(name = '', income = '') {
     const row = document.createElement('div');
     row.className = 'form-group';
@@ -74,7 +80,7 @@ async function calculate(save = false) {
                 <tbody>
                     ${data.breakdown.map(row => `
                         <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
-                            <td style="padding:10px;">${row.name}</td>
+                            <td style="padding:10px;">${escapeHtml(row.name)}</td>
                             <td style="padding:10px; text-align:right;">৳${Number(row.income).toLocaleString()}</td>
                             <td style="padding:10px; text-align:right;">${row.percentage_share}%</td>
                             <td style="padding:10px; text-align:right; font-weight:700; color:var(--accent);">৳${Number(row.contribution).toLocaleString()}</td>

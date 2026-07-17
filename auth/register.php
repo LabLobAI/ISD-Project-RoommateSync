@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $result = auth_register($fullName, $email, $city, $password, true);
     if ($result['success']) {
-        header('Location: ../index.php?registered=1');
+        header('Location: ' . rm_url('index.php') . '?registered=1');
         exit;
     }
 
@@ -60,7 +60,7 @@ layout_header('Create account - RoommateSync', [
                 <button type="submit" class="primary-button">Create account</button>
             </form>
 
-            <p class="auth-footnote">Already have an account? <a href="login.php">Sign in</a> or <a href="../index.php">return home</a>.</p>
+            <p class="auth-footnote">Already have an account? <a href="<?= rm_url('auth/login.php') ?>">Sign in</a> or <a href="<?= rm_url('index.php') ?>">return home</a>.</p>
         </section>
     </div>
 

@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $result = auth_login($email, $password, $remember);
     if ($result['success']) {
-        header('Location: ../index.php?signed_in=1');
+        header('Location: ' . rm_url('index.php') . '?signed_in=1');
         exit;
     }
 
@@ -55,7 +55,7 @@ layout_header('Sign in - RoommateSync', [
                 <button type="submit" class="primary-button">Sign in</button>
             </form>
 
-            <p class="auth-footnote">New here? <a href="register.php">Create an account</a> or <a href="../index.php">return home</a>.</p>
+            <p class="auth-footnote">New here? <a href="<?= rm_url('auth/register.php') ?>">Create an account</a> or <a href="<?= rm_url('index.php') ?>">return home</a>.</p>
         </section>
     </div>
 

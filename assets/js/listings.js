@@ -10,6 +10,12 @@ function money(value) {
     return Number(value).toLocaleString();
 }
 
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
 async function loadListings() {
     priceLabel.textContent = maxPriceInput.value;
     listingGrid.innerHTML = '<p>Loading listings...</p>';
@@ -26,7 +32,7 @@ async function loadListings() {
         const data = await response.json();
 
         if (!data.success) {
-            listingGrid.innerHTML = `<div class="alert alert-error">${data.message}</div>`;
+            listingGrid.innerHTML = `<div class="alert alert-error">${escapeHtml(data.message)}</div>`;
             return;
         }
 
@@ -37,12 +43,12 @@ async function loadListings() {
 
         listingGrid.innerHTML = data.listings.map(listing => `
             <article class="listing-card">
-                ${listing.image_url ? `<img src="${listing.image_url}" alt="Room photo">` : ''}
+                ${listing.image_url ? `<img src="${escapeHtml(listing.image_url)}" alt="Room photo">` : ''}
                 <div class="listing-card-body">
-                    <h3>${listing.title}</h3>
+                    <h3>${escapeHtml(listing.title)}</h3>
                     <p class="price">৳${money(listing.rent)} / month</p>
-                    <p class="meta">${listing.location_text} · ${listing.room_type} · ${listing.bedrooms} bed · ${listing.bathrooms} bath</p>
-                    <p class="meta">Landlord: ${listing.landlord_name}</p>
+                    <p class="meta">${escapeHtml(listing.location_text)} · ${escapeHtml(listing.room_type)} · ${listing.bedrooms} bed · ${listing.bathrooms} bath</p>
+                    <p class="meta">Landlord: ${escapeHtml(listing.landlord_name)}</p>
                 </div>
             </article>
         `).join('');

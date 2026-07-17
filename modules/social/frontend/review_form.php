@@ -8,7 +8,7 @@ require_once __DIR__ . '/../../../core/auth.php';
 require_once __DIR__ . '/../../../core/layout.php';
 
 $currentUserId = auth_user_id();
-$currentUser = auth_user();
+$currentUser = auth_require_login();
 
 $peopleStmt = db()->prepare('SELECT id, full_name, email FROM users WHERE id <> :id ORDER BY full_name');
 $peopleStmt->execute(['id' => $currentUserId]);
