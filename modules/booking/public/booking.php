@@ -47,13 +47,18 @@ if (isset($_GET['api']) && $_GET['api'] === 'available_slots') {
 
 if (isset($_GET['api']) && $_GET['api'] === 'book_viewing') {
     try {
+        $currentUser = auth_user();
+        if (!$currentUser) {
+            json_response(['success' => false, 'message' => 'Authentication required.'], 401);
+        }
+
         $data = read_json_body();
         if (!$data) {
             $data = $_POST;
         }
 
         $listingId = (int) ($data['listing_id'] ?? 0);
-        $tenantId = (int) ($data['tenant_id'] ?? auth_user_id());
+        $tenantId = (int) $currentUser['id'];
         $startInput = clean_string($data['start_time'] ?? '', 30);
 
         if ($listingId <= 0 || $tenantId <= 0 || $startInput === '') {
@@ -169,10 +174,6 @@ layout_header('Book Viewing', [
         </section>
     </div>
 
+<script src="assets/js/booking.js"></script>
 <?php
 layout_footer();
-?>
-
-<script src="assets/js/booking.js"></script>
-</body>
-</html>

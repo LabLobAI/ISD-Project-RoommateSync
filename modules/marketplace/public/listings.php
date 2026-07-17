@@ -116,10 +116,6 @@ layout_header('Rental Marketplace', [
         </div>
     </div>
 
+<script src="assets/js/listings.js"></script>
 <?php
 layout_footer();
-?>
-
-<script src="assets/js/listings.js"></script>
-</body>
-</html>

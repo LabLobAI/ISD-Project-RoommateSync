@@ -30,7 +30,7 @@ layout_header('Create account - RoommateSync', [
 ]);
 ?>
 
-    <main class="shell auth-shell">
+    <div class="shell auth-shell">
         <section class="auth-card">
             <p class="eyebrow">RoommateSync</p>
             <h1>Create account</h1>
@@ -62,7 +62,7 @@ layout_header('Create account - RoommateSync', [
 
             <p class="auth-footnote">Already have an account? <a href="login.php">Sign in</a> or <a href="../index.php">return home</a>.</p>
         </section>
-    </main>
+    </div>
 
 <?php
 layout_footer();

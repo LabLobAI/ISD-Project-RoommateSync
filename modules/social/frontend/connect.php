@@ -27,9 +27,9 @@ layout_header('Connect', [
                 <p class="lede">Double opt-in matching that unlocks chat once both sides accept.</p>
             </div>
             <nav class="header-links" aria-label="Social navigation">
-                <a class="ghost-link" href="/index.php">Home</a>
-                <a class="ghost-link" href="/modules/social/frontend/review_form.php">Review</a>
-                <a class="ghost-link" href="/modules/social/frontend/chat.php">Chat</a>
+                <a class="ghost-link" href="<?= rm_url('index.php') ?>">Home</a>
+                <a class="ghost-link" href="<?= rm_url('modules/social/frontend/review_form.php') ?>">Review</a>
+                <a class="ghost-link" href="<?= rm_url('modules/social/frontend/chat.php') ?>">Chat</a>
             </nav>
         </header>
 
@@ -70,10 +70,6 @@ layout_header('Connect', [
         </div>
     </div>
 
-<?php
-layout_footer();
-?>
-
 <script>
 const receiverSelect = document.getElementById('receiverId');
 const connectStatus = document.getElementById('connectStatus');
@@ -101,5 +97,5 @@ sendRequest.addEventListener('click', async () => {
     connectStatus.textContent = data.message ? `${data.status}: ${data.message}` : `Connection status: ${data.status}`;
 });
 </script>
-</body>
-</html>
+<?php
+layout_footer();

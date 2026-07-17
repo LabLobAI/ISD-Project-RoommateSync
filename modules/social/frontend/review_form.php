@@ -29,9 +29,9 @@ layout_header('Peer Review', [
                 <p class="lede">Submit a review for a matched roommate and see the aggregated score update live.</p>
             </div>
             <nav class="header-links" aria-label="Social navigation">
-                <a class="ghost-link" href="/index.php">Home</a>
-                <a class="ghost-link" href="/modules/social/frontend/chat.php">Chat</a>
-                <a class="ghost-link" href="/modules/social/frontend/connect.php">Connect</a>
+                <a class="ghost-link" href="<?= rm_url('index.php') ?>">Home</a>
+                <a class="ghost-link" href="<?= rm_url('modules/social/frontend/chat.php') ?>">Chat</a>
+                <a class="ghost-link" href="<?= rm_url('modules/social/frontend/connect.php') ?>">Connect</a>
             </nav>
         </header>
 
@@ -101,10 +101,6 @@ layout_header('Peer Review', [
         </div>
     </div>
 
-<?php
-layout_footer();
-?>
-
 <script>
 const reviewForm = document.getElementById('reviewForm');
 const reviewStatus = document.getElementById('reviewStatus');
@@ -167,5 +163,5 @@ reviewForm.addEventListener('submit', async (event) => {
 
 loadSummary(revieweeSelect.value);
 </script>
-</body>
-</html>
+<?php
+layout_footer();

@@ -55,9 +55,8 @@ try {
         exit;
     }
 
-    $safe = htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     $ins = $db->prepare('INSERT INTO messages (sender_id, receiver_id, message_text) VALUES (:s, :r, :t)');
-    $ins->execute([':s' => $sender, ':r' => $receiver, ':t' => $safe]);
+    $ins->execute([':s' => $sender, ':r' => $receiver, ':t' => $text]);
 
     http_response_code(201);
     echo json_encode(['success' => true, 'message_id' => (int) $db->lastInsertId(), 'sent_at' => date('c')]);

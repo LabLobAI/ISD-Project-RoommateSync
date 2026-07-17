@@ -6,10 +6,26 @@ require_once __DIR__ . '/database.php';
 require_once __DIR__ . '/helpers.php';
 require_once __DIR__ . '/auth.php';
 
+function rm_base_path(): string
+{
+    static $base = null;
+    if ($base !== null) {
+        return $base;
+    }
+    $scriptDir = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
+    $docRoot = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+    $base = str_replace($docRoot, '', $scriptDir);
+    return $base;
+}
+
+function rm_url(string $path): string
+{
+    return rm_base_path() . '/' . ltrim($path, '/');
+}
+
 function layout_header(string $title = 'RoommateSync', array $meta = []): void
 {
     $user = auth_user();
-    $currentPath = $_SERVER['REQUEST_URI'] ?? '/';
 ?>
 <!doctype html>
 <html lang="en">
@@ -17,7 +33,7 @@ function layout_header(string $title = 'RoommateSync', array $meta = []): void
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= h($title) ?></title>
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="<?= rm_url('assets/css/style.css') ?>">
     <?php if (!empty($meta['description'])): ?>
         <meta name="description" content="<?= h($meta['description']) ?>">
     <?php endif; ?>
@@ -28,27 +44,27 @@ function layout_header(string $title = 'RoommateSync', array $meta = []): void
 <body>
 <header class="site-header">
     <div class="header-inner">
-        <a class="brand" href="/index.php">RoommateSync</a>
+        <a class="brand" href="<?= rm_url('index.php') ?>">RoommateSync</a>
         <nav class="main-nav" aria-label="Main navigation">
-            <a href="/index.php">Dashboard</a>
-            <a href="/modules/marketplace/public/listings.php">Marketplace</a>
-            <a href="/modules/bill-split/public/expenses.php">Bill Split</a>
-            <a href="/modules/booking/public/booking.php">Booking</a>
-            <a href="/modules/listing-upload/public/create_listing.php">List a Room</a>
-            <a href="/modules/social/frontend/connect.php">Connect</a>
-            <a href="/modules/social/frontend/chat.php">Chat</a>
-            <a href="/modules/social/frontend/review_form.php">Reviews</a>
+            <a href="<?= rm_url('index.php') ?>">Dashboard</a>
+            <a href="<?= rm_url('modules/marketplace/public/listings.php') ?>">Marketplace</a>
+            <a href="<?= rm_url('modules/bill-split/public/expenses.php') ?>">Bill Split</a>
+            <a href="<?= rm_url('modules/booking/public/booking.php') ?>">Booking</a>
+            <a href="<?= rm_url('modules/listing-upload/public/create_listing.php') ?>">List a Room</a>
+            <a href="<?= rm_url('modules/social/frontend/connect.php') ?>">Connect</a>
+            <a href="<?= rm_url('modules/social/frontend/chat.php') ?>">Chat</a>
+            <a href="<?= rm_url('modules/social/frontend/review_form.php') ?>">Reviews</a>
         </nav>
         <div class="header-auth">
             <?php if ($user): ?>
                 <div class="user-menu">
                     <span class="user-name"><?= h($user['full_name']) ?></span>
                     <span class="user-role badge badge-<?= h(auth_user_role()) ?>"><?= h(ucfirst(auth_user_role())) ?></span>
-                    <a class="ghost-link" href="/auth/logout.php">Sign out</a>
+                    <a class="ghost-link" href="<?= rm_url('auth/logout.php') ?>">Sign out</a>
                 </div>
             <?php else: ?>
-                <a class="ghost-link" href="/auth/login.php">Sign in</a>
-                <a class="primary-link" href="/auth/register.php">Join</a>
+                <a class="ghost-link" href="<?= rm_url('auth/login.php') ?>">Sign in</a>
+                <a class="primary-link" href="<?= rm_url('auth/register.php') ?>">Join</a>
             <?php endif; ?>
         </div>
     </div>
@@ -63,14 +79,14 @@ function layout_footer(): void
 </main>
 <footer class="site-footer">
     <div class="footer-inner">
-        <p>&copy; <?= date('Y') ?> RoommateSync. Shared housing made simple.</p>
-        <nav aria-label="Footer links">
-            <a href="/index.php">Home</a>
-            <a href="/modules/marketplace/public/listings.php">Marketplace</a>
-            <a href="/modules/bill-split/public/expenses.php">Bill Split</a>
-            <a href="/modules/booking/public/booking.php">Booking</a>
-            <a href="/modules/listing-upload/public/create_listing.php">List a Room</a>
-            <a href="/modules/social/frontend/connect.php">Social</a>
+        <p class="footer-copyright">&copy; <?= date('Y') ?> RoommateSync. Shared housing made simple.</p>
+        <nav class="footer-nav" aria-label="Footer links">
+            <a href="<?= rm_url('index.php') ?>">Home</a>
+            <a href="<?= rm_url('modules/marketplace/public/listings.php') ?>">Marketplace</a>
+            <a href="<?= rm_url('modules/bill-split/public/expenses.php') ?>">Bill Split</a>
+            <a href="<?= rm_url('modules/booking/public/booking.php') ?>">Booking</a>
+            <a href="<?= rm_url('modules/listing-upload/public/create_listing.php') ?>">List a Room</a>
+            <a href="<?= rm_url('modules/social/frontend/connect.php') ?>">Social</a>
         </nav>
     </div>
 </footer>

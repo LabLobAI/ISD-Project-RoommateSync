@@ -79,16 +79,6 @@ foreach ($modules as $module) {
     $statusCounts[$module['status']]++;
 }
 
-function h(string $value): string
-{
-    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
-}
-
-function path_href(string $value): string
-{
-    return str_replace(' ', '%20', $value);
-}
-
 layout_header('RoommateSync - Unified Project', [
     'description' => 'Find a room, split costs, and manage house life in one place.',
 ]);
@@ -102,22 +92,22 @@ layout_header('RoommateSync - Unified Project', [
                 <p class="lede">A single landing page for the project, with sign in, sign up, and a module dashboard for the rental marketplace, bill split, booking, and social flows.</p>
 
                 <?php if ($flashMessage !== ''): ?>
-                    <div class="flash-message"><?= h($flashMessage) ?></div>
+                    <div class="flash-message"><?= e($flashMessage) ?></div>
                 <?php endif; ?>
 
                 <?php if ($authUser): ?>
                     <div class="auth-summary">
                         <div>
                             <p class="section-kicker">Signed in</p>
-                            <strong><?= h($authUser['full_name']) ?></strong>
-                            <p class="muted"><?= h($authUser['email']) ?> &middot; <?= h($authUser['city']) ?></p>
+                            <strong><?= e($authUser['full_name']) ?></strong>
+                            <p class="muted"><?= e($authUser['email']) ?> &middot; <?= e($authUser['city']) ?></p>
                         </div>
-                        <a class="ghost-link" href="auth/logout.php">Sign out</a>
+                        <a class="ghost-link" href="<?= rm_url('auth/logout.php') ?>">Sign out</a>
                     </div>
                 <?php else: ?>
                     <div class="auth-cta-row">
-                        <a class="primary-link" href="auth/login.php">Sign in</a>
-                        <a class="ghost-link" href="auth/register.php">Create account</a>
+                        <a class="primary-link" href="<?= rm_url('auth/login.php') ?>">Sign in</a>
+                        <a class="ghost-link" href="<?= rm_url('auth/register.php') ?>">Create account</a>
                     </div>
                 <?php endif; ?>
 
@@ -160,12 +150,12 @@ layout_header('RoommateSync - Unified Project', [
                 <?php foreach ($modules as $module): ?>
                     <article class="module-card">
                         <div class="card-top">
-                            <span class="badge badge-<?= strtolower($module['status']) ?>"><?= h($module['status']) ?></span>
-                            <span class="group-label"><?= h($module['group']) ?></span>
+                            <span class="badge badge-<?= strtolower($module['status']) ?>"><?= e($module['status']) ?></span>
+                            <span class="group-label"><?= e($module['group']) ?></span>
                         </div>
-                        <h3><?= h($module['title']) ?></h3>
-                        <p><?= h($module['summary']) ?></p>
-                        <a href="<?= h(path_href($module['path'])) ?>">Open module</a>
+                        <h3><?= e($module['title']) ?></h3>
+                        <p><?= e($module['summary']) ?></p>
+                        <a href="<?= rm_url($module['path']) ?>">Open module</a>
                     </article>
                 <?php endforeach; ?>
             </div>
@@ -202,19 +192,19 @@ layout_header('RoommateSync - Unified Project', [
                 <p class="section-note">Use the dashboard after signing in, or open any module directly for development and testing.</p>
             </div>
             <div class="launch-grid">
-                <a class="launch-card" href="modules/marketplace/public/listings.php">
+                <a class="launch-card" href="<?= rm_url('modules/marketplace/public/listings.php') ?>">
                     <span>Marketplace</span>
                     <strong>Browse listings</strong>
                 </a>
-                <a class="launch-card" href="modules/bill-split/public/expenses.php">
+                <a class="launch-card" href="<?= rm_url('modules/bill-split/public/expenses.php') ?>">
                     <span>Bill split</span>
                     <strong>Split shared costs</strong>
                 </a>
-                <a class="launch-card" href="modules/booking/public/booking.php">
+                <a class="launch-card" href="<?= rm_url('modules/booking/public/booking.php') ?>">
                     <span>Booking</span>
                     <strong>Reserve viewings</strong>
                 </a>
-                <a class="launch-card" href="modules/listing-upload/public/create_listing.php">
+                <a class="launch-card" href="<?= rm_url('modules/listing-upload/public/create_listing.php') ?>">
                     <span>Listing upload</span>
                     <strong>Create a room listing</strong>
                 </a>
