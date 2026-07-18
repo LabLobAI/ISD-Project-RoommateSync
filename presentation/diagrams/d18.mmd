@@ -1,0 +1,43 @@
+graph TB
+  subgraph Pres[Presentation]
+    Dash[index.php]
+    AuthP[auth pages]
+    Mkt[listings.php]
+    Bill[expenses.php]
+    Book[booking.php]
+    Soc[chat connect review]
+  end
+  subgraph App[Application]
+    Lay[layout.php]
+    AC[auth.php]
+    Hp[helpers.php]
+    Boot[bootstrap.php]
+  end
+  subgraph APIx[API]
+    L1[listings]
+    C2[calculate]
+    S3[available_slots]
+    B4[book_viewing]
+    C5[connect]
+    M6[message]
+  end
+  subgraph Datax[Data]
+    DB[database.php]
+    MY[(MySQL)]
+    FU[uploads]
+  end
+  Pres --> Lay
+  Lay --> AC
+  Mkt --> L1
+  Bill --> C2
+  Book --> S3
+  Book --> B4
+  Soc --> C5
+  Soc --> M6
+  L1 --> DB
+  C2 --> DB
+  S3 --> DB
+  B4 --> DB
+  C5 --> DB
+  M6 --> DB
+  DB --> MY

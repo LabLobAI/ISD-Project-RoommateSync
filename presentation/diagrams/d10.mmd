@@ -1,0 +1,21 @@
+sequenceDiagram
+  actor U as User
+  participant B as Browser
+  participant S as Server
+  participant DB as MySQL
+  U->>B: Register form
+  B->>S: POST /auth/register.php
+  S->>DB: SELECT email?
+  S->>S: password_hash(bcrypt)
+  S->>DB: INSERT users
+  S->>S: session_regenerate_id
+  S-->>B: 302 -> dashboard
+  U->>B: Login + Remember me
+  B->>S: POST /auth/login.php
+  S->>DB: SELECT user
+  S->>S: password_verify
+  opt Remember
+    S->>DB: UPDATE remember_token
+    S->>B: Set-Cookie
+  end
+  S-->>B: 302 -> dashboard

@@ -1,0 +1,7 @@
+graph LR
+  User((Tenant / Landlord))
+  System[RoommateSync System]
+  DB[(MySQL Database)]
+  User -->|Browse, Book, Review, Chat| System
+  System -->|Listings, Slots, Messages| User
+  System <-->|Read / Write| DB

@@ -1,0 +1,9 @@
+stateDiagram-v2
+  [*] --> AVAILABLE : Landlord creates
+  AVAILABLE --> BOOKED : Tenant books
+  AVAILABLE --> HIDDEN : Landlord hides
+  AVAILABLE --> [*] : Delete
+  BOOKED --> AVAILABLE : Cancel
+  BOOKED --> BOOKED : New booking
+  HIDDEN --> AVAILABLE : Unhide
+  HIDDEN --> [*] : Delete

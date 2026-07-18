@@ -1,0 +1,12 @@
+flowchart TD
+  Start([Start]) --> A[A sends request]
+  A --> B[INSERT PENDING]
+  B --> C[Request sent]
+  C --> D{B wants connect?}
+  D -->|No| G[Ignored] --> End1([End])
+  D -->|Yes| I[B sends back]
+  I --> J{Mutual exists?}
+  J -->|No| K[INSERT PENDING] --> End2([End])
+  J -->|Yes| M[UPDATE ACCEPTED]
+  M --> N[Connected!]
+  N --> O[Chat unlocked] --> End3([End])

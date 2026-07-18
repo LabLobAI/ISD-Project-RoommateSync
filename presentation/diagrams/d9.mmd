@@ -1,0 +1,16 @@
+sequenceDiagram
+  actor A as User A
+  actor B as User B
+  participant S as Server
+  participant DB as MySQL
+  A->>S: POST connect_request A->B
+  S->>DB: INSERT PENDING
+  S-->>A: Request sent
+  B->>S: POST connect_request B->A
+  S->>DB: UPDATE both ACCEPTED
+  S-->>B: Connected!
+  A->>S: POST send_message
+  S->>DB: INSERT message
+  A->>S: GET fetch_messages
+  S->>DB: SELECT thread
+  S-->>A: {messages}

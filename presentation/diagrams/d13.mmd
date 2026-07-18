@@ -1,0 +1,15 @@
+flowchart TD
+  Start([Start]) --> A[Enter bill + amount]
+  A --> B[Add roommate rows]
+  B --> C{Incomes > 0?}
+  C -->|No| D[Error] --> B
+  C -->|Yes| E[Combined income]
+  E --> F[Share = income/combined x total]
+  F --> G[Show table]
+  G --> H{Save?}
+  H -->|No| I[Results only] --> End1([End])
+  H -->|Yes| J[Auth user]
+  J --> K[BEGIN]
+  K --> L[INSERT bill_logs]
+  L --> M[INSERT bill_log_roommates]
+  M --> N[COMMIT] --> End2([End])

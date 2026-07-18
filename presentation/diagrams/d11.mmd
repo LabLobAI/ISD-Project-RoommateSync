@@ -1,0 +1,15 @@
+flowchart TD
+  Start([Start]) --> A[Select listing]
+  A --> B[Pick date]
+  B --> C[Fetch slots]
+  C --> D{Slots available?}
+  D -->|No| E[No slots] --> End1([End])
+  D -->|Yes| F[Show grid]
+  F --> G[Click slot]
+  G --> H{Conflict?}
+  H -->|Yes| J[Error] --> F
+  H -->|No| K{Listing available?}
+  K -->|No| L[Error] --> End2([End])
+  K -->|Yes| M[INSERT PENDING]
+  M --> N[COMMIT]
+  N --> O[Success + ID] --> End3([End])

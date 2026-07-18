@@ -1,0 +1,11 @@
+graph LR
+  A[Select listing] --> B[Pick date]
+  B --> C[API available_slots]
+  C --> D[Query non-cancelled]
+  D --> E[Return booked slots]
+  E --> F[Pick time slot]
+  F --> G[API book_viewing]
+  G --> H{Conflict?}
+  H -->|No| I[INSERT status=PENDING]
+  H -->|Yes| J[409 error]
+  I --> K[Success + booking ID]

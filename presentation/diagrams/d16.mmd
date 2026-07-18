@@ -1,0 +1,11 @@
+stateDiagram-v2
+  [*] --> PENDING : A sends
+  PENDING --> ACCEPTED : B sends back (mutual)
+  PENDING --> REJECTED : B rejects
+  PENDING --> CANCELLED : A cancels
+  ACCEPTED --> DISCONNECTED : Either disconnects
+  ACCEPTED --> BLOCKED : Either blocks
+  DISCONNECTED --> [*]
+  REJECTED --> [*]
+  CANCELLED --> [*]
+  BLOCKED --> [*]

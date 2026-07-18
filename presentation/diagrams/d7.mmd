@@ -1,0 +1,16 @@
+classDiagram
+  class User{ +int id +String email +String role +login() +logout() +isAuthenticated() }
+  class Listing{ +int id +float rent +String status +search() }
+  class Appointment{ +int id +DateTime start +book() +checkConflict() }
+  class ConnectionRequest{ +int id +String status +accept() +mutualAccept() }
+  class Message{ +int id +send() +fetchThread() }
+  class UserReview{ +int id +getAverage() }
+  class BillLog{ +int id +calculateShares() }
+  User "1" --> "*" Listing
+  User "1" --> "*" Appointment
+  User "1" --> "*" ConnectionRequest
+  User "1" --> "*" Message
+  User "1" --> "*" UserReview
+  User "1" --> "*" BillLog
+  BillLog "1" --> "*" BillLogRoommate
+  Listing "1" --> "*" Appointment

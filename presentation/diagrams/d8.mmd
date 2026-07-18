@@ -1,0 +1,18 @@
+sequenceDiagram
+  actor T as Tenant
+  participant B as Browser
+  participant S as Server
+  participant DB as MySQL
+  T->>B: Select listing & date
+  B->>S: GET api/available_slots
+  S->>DB: SELECT booked slots
+  DB-->>S: booked[]
+  S-->>B: JSON {booked}
+  T->>B: Click slot
+  B->>S: POST api/book_viewing
+  S->>DB: BEGIN + SELECT FOR UPDATE
+  S->>DB: Check conflict
+  S->>DB: INSERT appointment
+  S->>DB: COMMIT
+  S-->>B: {success, appointment}
+  B-->>T: Confirmed

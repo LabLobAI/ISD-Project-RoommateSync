@@ -1,0 +1,12 @@
+graph TB
+  Browser[Web Browser]
+  Mobile[Mobile Browser]
+  Apache[Apache or PHP Server 8000]
+  PHP[PHP 8.1 Runtime]
+  MySQL[MySQL 8.0 3307]
+  Uploads[Uploads Images]
+  Browser -->|HTTP| Apache
+  Mobile -->|HTTP| Apache
+  Apache --> PHP
+  PHP --> MySQL
+  PHP --> Uploads

@@ -1,0 +1,704 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RoommateSync — ISD Project Presentation</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  :root{
+    --bg:#0c0f1a; --panel:#141a2e; --panel2:#1b2236; --accent:#5b8cff; --accent2:#7c5cff;
+    --text:#e8edf7; --muted:#9aa6c2; --border:rgba(255,255,255,.10); --ok:#3ddc97; --warn:#ffb454;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--text);
+    font-family:'Segoe UI',Roboto,system-ui,-apple-system,sans-serif;}
+  #deck{position:relative;height:100vh;overflow:hidden}
+  .slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;
+    padding:64px 80px;overflow:auto}
+  .slide.active{display:flex;animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .kicker{color:var(--accent);letter-spacing:.18em;text-transform:uppercase;font-size:13px;font-weight:700;margin:0 0 12px}
+  h1{font-size:46px;line-height:1.1;margin:0 0 18px;background:linear-gradient(90deg,#fff,#9db4ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+  h2{font-size:32px;margin:0 0 22px}
+  h3{font-size:20px;margin:14px 0 8px}
+  p{color:var(--muted);font-size:18px;line-height:1.6;max-width:900px}
+  .lead{font-size:20px;color:var(--text)}
+  .grid{display:grid;gap:18px;margin-top:18px}
+  .g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px}
+  .card h3{margin-top:0;color:#fff}
+  .card .num{font-size:34px;font-weight:800;color:var(--accent)}
+  .pill{display:inline-block;background:var(--panel2);border:1px solid var(--border);border-radius:999px;
+    padding:6px 14px;font-size:14px;color:var(--muted);margin:4px 6px 4px 0}
+  table{width:100%;border-collapse:collapse;font-size:15px;margin-top:8px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--border)}
+  th{color:var(--accent);font-weight:700}
+  td{color:var(--muted)} td b,td strong{color:var(--text)}
+  .diagram{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:10px 14px;margin-top:6px;overflow:auto}
+  .mermaid{font-size:14px}
+  ul{color:var(--muted);font-size:18px;line-height:1.7}
+  .center{text-align:center}
+  .tag{color:var(--accent2);font-weight:700}
+  .foot{position:absolute;bottom:18px;right:28px;color:var(--muted);font-size:13px}
+  .title-slide{text-align:center;align-items:center;justify-content:center}
+  .title-slide h1{font-size:64px}
+  .progress{position:fixed;left:0;top:0;height:4px;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0;z-index:50;transition:width .3s}
+  .nav{position:fixed;bottom:18px;left:28px;z-index:50;display:flex;gap:10px;align-items:center}
+  .nav button{background:var(--panel2);color:var(--text);border:1px solid var(--border);border-radius:10px;
+    padding:8px 16px;font-size:15px;cursor:pointer}
+  .nav button:hover{background:var(--accent);border-color:var(--accent)}
+  .pageno{color:var(--muted);font-size:14px;min-width:54px;text-align:center}
+  .bar{height:14px;border-radius:8px;background:linear-gradient(90deg,var(--accent),var(--accent2));display:inline-block;vertical-align:middle}
+  .stack li{margin-bottom:6px}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div id="deck">
+
+<!-- 1 TITLE -->
+<section class="slide title-slide active">
+  <p class="kicker">ISD Course Project · KUET</p>
+  <h1>RoommateSync</h1>
+  <p class="lead" style="font-size:24px">Find a room, split costs, manage house life — all in one place.</p>
+  <div style="margin-top:28px">
+    <span class="pill">PHP 8.1</span><span class="pill">MySQL 8.0</span><span class="pill">HTML5 / CSS3</span>
+    <span class="pill">Vanilla JS</span><span class="pill">XAMPP</span><span class="pill">MIT</span>
+  </div>
+  <p style="margin-top:30px">Team RoommateSync · Dadhichi · Shawki · Plabon</p>
+</section>
+
+<!-- 2 AGENDA -->
+<section class="slide">
+  <p class="kicker">What we'll cover</p>
+  <h2>Presentation Agenda</h2>
+  <div class="grid g2">
+    <div class="card"><h3>1. Problem &amp; Solution</h3><p>Why RoommateSync exists and what it delivers.</p></div>
+    <div class="card"><h3>2. Modules</h3><p>Seven integrated feature modules.</p></div>
+    <div class="card"><h3>3. Architecture</h3><p>Layers, data flow, deployment.</p></div>
+    <div class="card"><h3>4. Data Model</h3><p>ERD, schema, relationships.</p></div>
+    <div class="card"><h3>5. UML Diagrams</h3><p>Use case, class, sequence, state, activity &amp; more.</p></div>
+    <div class="card"><h3>6. Process &amp; Results</h3><p>Sprints, testing, team &amp; demo.</p></div>
+  </div>
+</section>
+
+<!-- 3 PROBLEM -->
+<section class="slide">
+  <p class="kicker">The Context</p>
+  <h2>The Problem</h2>
+  <p class="lead">Students and young professionals relocating to cities like Dhaka struggle to find trustworthy roommates, verify rental listings, and manage shared expenses.</p>
+  <div class="grid g3" style="margin-top:14px">
+    <div class="card"><h3>Fragmented discovery</h3><p>Facebook groups, word-of-mouth, and spreadsheets — no single source of truth.</p></div>
+    <div class="card"><h3>Trust gap</h3><p>No way to verify landlords or rate past roommates on compatibility.</p></div>
+    <div class="card"><h3>Shared-cost chaos</h3><p>Splitting bills is manual, unfair, and easy to lose track of.</p></div>
+  </div>
+  <p style="margin-top:14px">Built as a university ISD project by a team of 3 students for the Bangladeshi rental market.</p>
+</section>
+
+<!-- 4 SOLUTION -->
+<section class="slide">
+  <p class="kicker">Our Approach</p>
+  <h2>The Solution — One Unified Platform</h2>
+  <p class="lead">A full-stack PHP web app that unifies discovery, trust, and shared-living management.</p>
+  <table>
+    <tr><th>#</th><th>Module</th><th>What it does</th></tr>
+    <tr><td><b>1</b></td><td><b>Rental Marketplace</b></td><td>Browse, filter &amp; search listings by price, room type &amp; location — real-time.</td></tr>
+    <tr><td><b>2</b></td><td><b>Bill Split Calculator</b></td><td>Split bills proportionally by income with optional DB logging.</td></tr>
+    <tr><td><b>3</b></td><td><b>Viewing Booking</b></td><td>30-min slots with automatic conflict prevention.</td></tr>
+    <tr><td><b>4</b></td><td><b>Listing Upload</b></td><td>Landlords create listings with image upload &amp; validation.</td></tr>
+    <tr><td><b>5</b></td><td><b>Peer Review</b></td><td>Rate roommates; aggregated cleanliness &amp; communication scores.</td></tr>
+    <tr><td><b>6</b></td><td><b>Chat</b></td><td>Real-time polling messaging between accepted connections.</td></tr>
+    <tr><td><b>7</b></td><td><b>Connect</b></td><td>Double opt-in matching that unlocks chat when both accept.</td></tr>
+  </table>
+</section>
+
+<!-- 5 TECH STACK -->
+<section class="slide">
+  <p class="kicker">Under the Hood</p>
+  <h2>Technology Stack</h2>
+  <div class="grid g2">
+    <div class="card"><h3>Frontend</h3><p>HTML5, CSS3, Vanilla JavaScript — glassmorphism dark theme, responsive grid.</p></div>
+    <div class="card"><h3>Backend</h3><p>PHP 8.1 (pure, no framework) — API endpoints &amp; session management.</p></div>
+    <div class="card"><h3>Database</h3><p>MySQL 8.0 via XAMPP — relational storage, indexing, transactions.</p></div>
+    <div class="card"><h3>Data Access</h3><p>PDO singleton — prepared statements, transaction &amp; lock support.</p></div>
+    <div class="card"><h3>Dev &amp; VCS</h3><p>PHP built-in server (`php -S`), Git + GitHub, Jira, Zephyr.</p></div>
+    <div class="card"><h3>Testing</h3><p>Zephyr for Jira — 49 test cases across 7 cycles, 100% pass.</p></div>
+  </div>
+</section>
+
+<!-- 6 SYSTEM ARCHITECTURE -->
+<section class="slide">
+  <p class="kicker">Architecture</p>
+  <h2>System Architecture</h2>
+  <div class="diagram"><div class="mermaid">
+graph TB
+  Browser[Web Browser]
+  subgraph PL["Presentation"]
+    Dashboard[index.php Dashboard]
+    Auth[auth/* Login/Register]
+    Modules[modules/* Pages]
+    CSS[style.css]
+    JS[assets/js/*.js]
+  end
+  subgraph AL["Application"]
+    Layout[layout.php]
+    Helpers[helpers.php]
+    AuthCore[auth.php RBAC]
+    Bootstrap[bootstrap.php]
+  end
+  subgraph DL["Data"]
+    Database[database.php PDO]
+    MySQL[(MySQL 8.0)]
+  end
+  Uploads[Uploads/ Images]
+  Browser -->|HTTP| Dashboard
+  Browser -->|HTTP| Auth
+  Browser -->|HTTP| Modules
+  Dashboard --> Layout
+  Modules --> Layout
+  Layout --> AuthCore
+  AuthCore --> Database
+  Modules --> Database
+  Database --> MySQL
+  Modules -->|File Upload| Uploads
+  </div></div>
+</section>
+
+<!-- 7 DFD LEVEL 0 -->
+<section class="slide">
+  <p class="kicker">Data Flow Diagram</p>
+  <h2>DFD Level 0 — Context</h2>
+  <div class="diagram"><div class="mermaid">
+graph LR
+  User((Tenant / Landlord))
+  System[RoommateSync System]
+  DB[(MySQL Database)]
+  User -->|Browse, Book, Review, Chat| System
+  System -->|Listings, Slots, Messages| User
+  System <-->|Read / Write| DB
+  </div></div>
+  <p style="margin-top:14px">External users interact with the system; the system persists everything in MySQL.</p>
+</section>
+
+<!-- 8 DFD LEVEL 1 -->
+<section class="slide">
+  <p class="kicker">Data Flow Diagram</p>
+  <h2>DFD Level 1 — Major Processes</h2>
+  <div class="diagram"><div class="mermaid">
+graph TB
+  subgraph In[Inputs]
+    U1[Register/Login] U2[Search/Filter] U3[Booking] U4[Connect] U5[Review] U6[Bill Split]
+  end
+  subgraph P[Processes]
+    P1[1.0 Auth] P2[2.0 Marketplace] P3[3.0 Booking] P4[4.0 Social] P5[5.0 Review] P6[6.0 Bill]
+  end
+  subgraph D[Stores]
+    D1[(users)] D2[(listings)] D3[(appointments)] D4[(connection_requests)] D5[(messages)] D6[(user_reviews)] D7[(bill_logs)]
+  end
+  U1-->P1; U2-->P2; U3-->P3; U4-->P4; U5-->P5; U6-->P6
+  P1<-->D1; P2<-->D2; P3<-->D3; P4<-->D4; P4<-->D5; P5<-->D6; P6<-->D7
+  </div></div>
+</section>
+
+<!-- 9 DFD LEVEL 2 -->
+<section class="slide">
+  <p class="kicker">Data Flow Diagram</p>
+  <h2>DFD Level 2 — Booking Detail</h2>
+  <div class="diagram"><div class="mermaid">
+graph LR
+  A[Select listing] --> B[Pick date]
+  B --> C[API available_slots]
+  C --> D[Query non-cancelled]
+  D --> E[Return booked slots]
+  E --> F[Pick time slot]
+  F --> G[API book_viewing]
+  G --> H{Conflict?}
+  H -->|No| I[INSERT status=PENDING]
+  H -->|Yes| J[409 error]
+  I --> K[Success + booking ID]
+  </div></div>
+</section>
+
+<!-- 10 ERD -->
+<section class="slide">
+  <p class="kicker">Data Model</p>
+  <h2>Entity Relationship Diagram</h2>
+  <div class="diagram"><div class="mermaid">
+erDiagram
+  users ||--o{ listings : owns
+  users ||--o{ appointments : books
+  users ||--o{ connection_requests : sends
+  users ||--o{ user_reviews : writes
+  users ||--o{ messages : sends
+  users ||--o{ bill_logs : creates
+  bill_logs ||--o{ bill_log_roommates : contains
+  listings ||--o{ appointments : has
+  users ||--o{ user_profiles : has
+  </div></div>
+</section>
+
+<!-- 11 SCHEMA TABLES -->
+<section class="slide">
+  <p class="kicker">Data Model</p>
+  <h2>Database Schema</h2>
+  <table>
+    <tr><th>Table</th><th>Rows (seed)</th><th>Purpose</th></tr>
+    <tr><td><b>users</b></td><td>5</td><td>Accounts with roles</td></tr>
+    <tr><td><b>user_profiles</b></td><td>5</td><td>Lifestyle preferences</td></tr>
+    <tr><td><b>user_profile_tags</b></td><td>19</td><td>Interest tags</td></tr>
+    <tr><td><b>listings</b></td><td>5</td><td>Rental listings</td></tr>
+    <tr><td><b>appointments</b></td><td>2</td><td>Viewing bookings</td></tr>
+    <tr><td><b>connection_requests</b></td><td>2</td><td>Social pairs</td></tr>
+    <tr><td><b>messages</b></td><td>2</td><td>Chat</td></tr>
+    <tr><td><b>user_reviews</b></td><td>1</td><td>Peer reviews</td></tr>
+    <tr><td><b>bill_logs / bill_log_roommates</b></td><td>0</td><td>Saved splits</td></tr>
+  </table>
+  <p style="margin-top:10px"><b>11 tables · 8 indexes · 12 foreign keys.</b></p>
+</section>
+
+<!-- 12 USE CASE -->
+<section class="slide">
+  <p class="kicker">UML</p>
+  <h2>Use Case Diagram</h2>
+  <div class="diagram"><div class="mermaid">
+graph TB
+  Tenant((Tenant)) Landlord((Landlord)) Admin((Admin))
+  subgraph RS[RoommateSync]
+    UC1[Register/Login] UC2[Browse Listings] UC3[Filter] UC4[Book Viewing]
+    UC5[Upload Listing] UC6[Split Bill] UC7[Send Connect] UC8[Accept Connect]
+    UC9[Chat] UC10[Review] UC11[Review Summary] UC12[Manage Users] UC13[Logout]
+  end
+  Tenant --> UC1; Tenant --> UC2; Tenant --> UC3; Tenant --> UC4
+  Tenant --> UC6; Tenant --> UC7; Tenant --> UC8; Tenant --> UC9; Tenant --> UC10; Tenant --> UC13
+  Landlord --> UC1; Landlord --> UC5; Landlord --> UC2; Landlord --> UC9; Landlord --> UC13
+  Admin --> UC12; Admin --> UC1; Admin --> UC13
+  UC7 ..> UC8 : include
+  UC8 ..> UC9 : include
+  </div></div>
+</section>
+
+<!-- 13 CLASS DIAGRAM -->
+<section class="slide">
+  <p class="kicker">UML</p>
+  <h2>Class Diagram (core entities)</h2>
+  <div class="diagram"><div class="mermaid">
+classDiagram
+  class User{ +int id +String email +String role +login() +logout() }
+  class Listing{ +int id +float rent +String status +search() }
+  class Appointment{ +int id +DateTime start +book() +checkConflict() }
+  class ConnectionRequest{ +int id +String status +accept() +mutualAccept() }
+  class Message{ +int id +send() +fetchThread() }
+  class UserReview{ +int id +getAverage() }
+  class BillLog{ +int id +calculateShares() }
+  User "1" --> "*" Listing
+  User "1" --> "*" Appointment
+  User "1" --> "*" ConnectionRequest
+  User "1" --> "*" Message
+  User "1" --> "*" UserReview
+  User "1" --> "*" BillLog
+  BillLog "1" --> "*" BillLogRoommate
+  Listing "1" --> "*" Appointment
+  </div></div>
+</section>
+
+<!-- 14 SEQUENCE BOOKING -->
+<section class="slide">
+  <p class="kicker">UML</p>
+  <h2>Sequence — Booking a Viewing</h2>
+  <div class="diagram"><div class="mermaid">
+sequenceDiagram
+  actor T as Tenant
+  participant B as Browser
+  participant S as Server
+  participant DB as MySQL
+  T->>B: Select listing & date
+  B->>S: GET api/available_slots
+  S->>DB: SELECT booked slots
+  DB-->>S: booked[]
+  S-->>B: JSON {booked}
+  T->>B: Click slot
+  B->>S: POST api/book_viewing
+  S->>DB: BEGIN + SELECT FOR UPDATE
+  S->>DB: Check conflict
+  S->>DB: INSERT appointment
+  S->>DB: COMMIT
+  S-->>B: {success, appointment}
+  B-->>T: Confirmed
+  </div></div>
+</section>
+
+<!-- 15 SEQUENCE CONNECT CHAT -->
+<section class="slide">
+  <p class="kicker">UML</p>
+  <h2>Sequence — Connect &amp; Chat</h2>
+  <div class="diagram"><div class="mermaid">
+sequenceDiagram
+  actor A as User A
+  actor B as User B
+  participant S as Server
+  participant DB as MySQL
+  A->>S: POST connect_request A->B
+  S->>DB: INSERT PENDING
+  S-->>A: Request sent
+  B->>S: POST connect_request B->A
+  S->>DB: UPDATE both ACCEPTED
+  S-->>B: Connected!
+  A->>S: POST send_message
+  S->>DB: INSERT message
+  A->>S: GET fetch_messages
+  S->>DB: SELECT thread
+  S-->>A: {messages}
+  </div></div>
+</section>
+
+<!-- 16 SEQUENCE AUTH -->
+<section class="slide">
+  <p class="kicker">UML</p>
+  <h2>Sequence — Register &amp; Login</h2>
+  <div class="diagram"><div class="mermaid">
+sequenceDiagram
+  actor U as User
+  participant B as Browser
+  participant S as Server
+  participant DB as MySQL
+  U->>B: Register form
+  B->>S: POST /auth/register.php
+  S->>DB: SELECT email?
+  S->>S: password_hash(bcrypt)
+  S->>DB: INSERT users
+  S->>S: session_regenerate_id
+  S-->>B: 302 -> dashboard
+  U->>B: Login + Remember me
+  B->>S: POST /auth/login.php
+  S->>DB: SELECT user
+  S->>S: password_verify
+  opt Remember
+    S->>DB: UPDATE remember_token
+    S->>B: Set-Cookie
+  end
+  S-->>B: 302 -> dashboard
+  </div></div>
+</section>
+
+<!-- 17 ACTIVITY BOOKING -->
+<section class="slide">
+  <p class="kicker">UML</p>
+  <h2>Activity — Booking Flow</h2>
+  <div class="diagram"><div class="mermaid">
+flowchart TD
+  Start([Start]) --> A[Select listing]
+  A --> B[Pick date]
+  B --> C[Fetch slots]
+  C --> D{Slots available?}
+  D -->|No| E[No slots] --> End1([End])
+  D -->|Yes| F[Show grid]
+  F --> G[Click slot]
+  G --> H{Conflict?}
+  H -->|Yes| J[Error] --> F
+  H -->|No| K{Listing available?}
+  K -->|No| L[Error] --> End2([End])
+  K -->|Yes| M[INSERT PENDING]
+  M --> N[COMMIT]
+  N --> O[Success + ID] --> End3([End])
+  </div></div>
+</section>
+
+<!-- 18 ACTIVITY CONNECT -->
+<section class="slide">
+  <p class="kicker">UML</p>
+  <h2>Activity — Connection Flow</h2>
+  <div class="diagram"><div class="mermaid">
+flowchart TD
+  Start([Start]) --> A[A sends request]
+  A --> B[INSERT PENDING]
+  B --> C[Request sent]
+  C --> D{B wants connect?}
+  D -->|No| G[Ignored] --> End1([End])
+  D -->|Yes| I[B sends back]
+  I --> J{Mutual exists?}
+  J -->|No| K[INSERT PENDING] --> End2([End])
+  J -->|Yes| M[UPDATE ACCEPTED]
+  M --> N[Connected!]
+  N --> O[Chat unlocked] --> End3([End])
+  </div></div>
+</section>
+
+<!-- 19 ACTIVITY BILL -->
+<section class="slide">
+  <p class="kicker">UML</p>
+  <h2>Activity — Bill Split Flow</h2>
+  <div class="diagram"><div class="mermaid">
+flowchart TD
+  Start([Start]) --> A[Enter bill + amount]
+  A --> B[Add roommate rows]
+  B --> C{Incomes > 0?}
+  C -->|No| D[Error] --> B
+  C -->|Yes| E[Combined income]
+  E --> F[Share = income/combined x total]
+  F --> G[Show table]
+  G --> H{Save?}
+  H -->|No| I[Results only] --> End1([End])
+  H -->|Yes| J[Auth user]
+  J --> K[BEGIN]
+  K --> L[INSERT bill_logs]
+  L --> M[INSERT bill_log_roommates]
+  M --> N[COMMIT] --> End2([End])
+  </div></div>
+</section>
+
+<!-- 20 STATE LISTING -->
+<section class="slide">
+  <p class="kicker">UML</p>
+  <h2>State Machine — Listing Status</h2>
+  <div class="diagram"><div class="mermaid">
+stateDiagram-v2
+  [*] --> AVAILABLE : Landlord creates
+  AVAILABLE --> BOOKED : Tenant books
+  AVAILABLE --> HIDDEN : Landlord hides
+  AVAILABLE --> [*] : Delete
+  BOOKED --> AVAILABLE : Cancel
+  BOOKED --> BOOKED : New booking
+  HIDDEN --> AVAILABLE : Unhide
+  HIDDEN --> [*] : Delete
+  </div></div>
+</section>
+
+<!-- 21 STATE APPOINTMENT -->
+<section class="slide">
+  <p class="kicker">UML</p>
+  <h2>State Machine — Appointment</h2>
+  <div class="diagram"><div class="mermaid">
+stateDiagram-v2
+  [*] --> PENDING : Books slot
+  PENDING --> CONFIRMED : Landlord confirms
+  PENDING --> CANCELLED : Cancel / timeout
+  CONFIRMED --> CANCELLED : Either cancels
+  CONFIRMED --> COMPLETED : Viewing happens
+  CANCELLED --> [*]
+  COMPLETED --> [*]
+  </div></div>
+</section>
+
+<!-- 22 STATE CONNECTION -->
+<section class="slide">
+  <p class="kicker">UML</p>
+  <h2>State Machine — Connection</h2>
+  <div class="diagram"><div class="mermaid">
+stateDiagram-v2
+  [*] --> PENDING : A sends
+  PENDING --> ACCEPTED : B sends back (mutual)
+  PENDING --> REJECTED : B rejects
+  PENDING --> CANCELLED : A cancels
+  ACCEPTED --> DISCONNECTED : Either disconnects
+  ACCEPTED --> BLOCKED : Either blocks
+  DISCONNECTED --> [*]
+  REJECTED --> [*]
+  CANCELLED --> [*]
+  BLOCKED --> [*]
+  </div></div>
+</section>
+
+<!-- 23 STATE SESSION -->
+<section class="slide">
+  <p class="kicker">UML</p>
+  <h2>State Machine — User Session</h2>
+  <div class="diagram"><div class="mermaid">
+stateDiagram-v2
+  [*] --> Anonymous : App loads
+  Anonymous --> Authenticating : Submit login
+  Authenticating --> Authenticated : Valid
+  Authenticating --> Anonymous : Invalid
+  Authenticated --> Authenticated : Active session
+  Authenticated --> TokenRefresh : Remember-me
+  TokenRefresh --> Authenticated : Refreshed
+  Authenticated --> Anonymous : Logout / expire
+  </div></div>
+</section>
+
+<!-- 24 COMPONENT DIAGRAM -->
+<section class="slide">
+  <p class="kicker">UML</p>
+  <h2>Component Diagram</h2>
+  <div class="diagram"><div class="mermaid">
+graph TB
+  subgraph Pres[Presentation]
+    Dash[index.php] AuthP[auth/*] Mkt[listings.php] Bill[expenses.php] Book[booking.php] Soc[chat/connect/review]
+  end
+  subgraph App[Application]
+    Lay[layout.php] AC[auth.php] Hp[helpers.php] Boot[bootstrap.php]
+  end
+  subgraph API[API]
+    L1[listings] C2[calculate] S3[available_slots] B4[book_viewing] C5[connect] M6[message]
+  end
+  subgraph Data[Data]
+    DB[database.php] MY[(MySQL)] FU[uploads/]
+  end
+  Pres --> Lay
+  Lay --> AC
+  Mkt --> L1; Bill --> C2; Book --> S3; Book --> B4; Soc --> C5; Soc --> M6
+  L1 --> DB; C2 --> DB; S3 --> DB; B4 --> DB; C5 --> DB; M6 --> DB
+  DB --> MY
+  </div></div>
+</section>
+
+<!-- 25 DEPLOYMENT -->
+<section class="slide">
+  <p class="kicker">UML</p>
+  <h2>Deployment Diagram</h2>
+  <div class="diagram"><div class="mermaid">
+graph TB
+  subgraph Client[Client Tier]
+    Browser[Web Browser] Mobile[Mobile Browser]
+  end
+  subgraph Server[Server Tier]
+    Apache[Apache / PHP Built-in :8000] PHP[PHP 8.1 Runtime]
+  end
+  subgraph DB[Data Tier]
+    MySQL[MySQL 8.0 :3307]
+  end
+  Uploads[Uploads/ Images]
+  Browser -->|HTTP| Apache
+  Mobile -->|HTTP| Apache
+  Apache --> PHP
+  PHP --> MySQL
+  PHP --> Uploads
+  </div></div>
+</section>
+
+<!-- 26 MODULE SPOTLIGHT -->
+<section class="slide">
+  <p class="kicker">Feature Deep Dive</p>
+  <h2>Module Highlights</h2>
+  <div class="grid g2">
+    <div class="card"><h3>Marketplace</h3><p>Real-time fetch() filtering by price, room type &amp; location; debounced 250ms; shows image, rent, beds, landlord.</p></div>
+    <div class="card"><h3>Bill Split</h3><p>Share = income / combined × total; dynamic roommate rows; optional DB save.</p></div>
+    <div class="card"><h3>Booking</h3><p>30-min slots 9:00–17:00; `SELECT ... FOR UPDATE` lock; 409 on conflict; transactional insert.</p></div>
+    <div class="card"><h3>Listing Upload</h3><p>JPG/PNG only, 5MB max; house-rule checkboxes; landlord-only via RBAC.</p></div>
+    <div class="card"><h3>Social</h3><p>Double opt-in Connect; 4s polling Chat with escapeHtml XSS guard; 1–5 peer reviews.</p></div>
+    <div class="card"><h3>Auth</h3><p>Session + remember-me cookie; bcrypt password_hash; roles tenant/landlord/admin.</p></div>
+  </div>
+</section>
+
+<!-- 27 API ENDPOINTS -->
+<section class="slide">
+  <p class="kicker">Integration</p>
+  <h2>API Endpoints</h2>
+  <table>
+    <tr><th>Method</th><th>Endpoint</th><th>Purpose</th></tr>
+    <tr><td><b>GET</b></td><td>listings.php?api=listings</td><td>Filtered listings</td></tr>
+    <tr><td><b>POST</b></td><td>expenses.php?api=calculate</td><td>Bill split breakdown</td></tr>
+    <tr><td><b>GET</b></td><td>booking.php?api=available_slots</td><td>Booked slots</td></tr>
+    <tr><td><b>POST</b></td><td>booking.php?api=book_viewing</td><td>Create appointment</td></tr>
+    <tr><td><b>POST</b></td><td>connect_request.php</td><td>Send connection</td></tr>
+    <tr><td><b>POST</b></td><td>send_message.php</td><td>Store message</td></tr>
+    <tr><td><b>GET</b></td><td>fetch_messages.php</td><td>Poll thread</td></tr>
+    <tr><td><b>POST</b></td><td>submit_review.php</td><td>Save review</td></tr>
+    <tr><td><b>GET</b></td><td>get_user_reviews.php</td><td>Aggregated scores</td></tr>
+  </table>
+</section>
+
+<!-- 28 SPRINTS -->
+<section class="slide">
+  <p class="kicker">Process</p>
+  <h2>Jira Sprint Management</h2>
+  <p class="lead">Scrum board · 4 sprints · 18 stories · 53 points planned, 83 delivered.</p>
+  <table>
+    <tr><th>Sprint</th><th>Goal</th><th>Points</th></tr>
+    <tr><td><b>1</b></td><td>Foundation — DB, auth, layout, dashboard</td><td>23</td></tr>
+    <tr><td><b>2</b></td><td>Core — marketplace &amp; bill split</td><td>19</td></tr>
+    <tr><td><b>3</b></td><td>Booking &amp; listing upload</td><td>20</td></tr>
+    <tr><td><b>4</b></td><td>Social, polish, testing, docs</td><td>21</td></tr>
+  </table>
+  <p style="margin-top:12px">Burndown: all sprints completed on time — <span class="bar" style="width:200px"></span> 100%</p>
+</section>
+
+<!-- 29 TESTING -->
+<section class="slide">
+  <p class="kicker">Quality</p>
+  <h2>Zephyr Test Management</h2>
+  <table>
+    <tr><th>Cycle</th><th>Module</th><th>Tests</th><th>Pass</th></tr>
+    <tr><td>1</td><td>Authentication</td><td>8</td><td>8</td></tr>
+    <tr><td>2</td><td>Marketplace</td><td>6</td><td>6</td></tr>
+    <tr><td>3</td><td>Bill Split</td><td>5</td><td>5</td></tr>
+    <tr><td>4</td><td>Booking</td><td>7</td><td>7</td></tr>
+    <tr><td>5</td><td>Listing Upload</td><td>5</td><td>5</td></tr>
+    <tr><td>6</td><td>Social</td><td>8</td><td>8</td></tr>
+    <tr><td>7</td><td>Regression</td><td>10</td><td>10</td></tr>
+    <tr><td><b>Total</b></td><td></td><td><b>49</b></td><td><b>49 (100%)</b></td></tr>
+  </table>
+</section>
+
+<!-- 30 TEAM -->
+<section class="slide">
+  <p class="kicker">People</p>
+  <h2>Team &amp; Work Distribution</h2>
+  <div class="grid g3">
+    <div class="card"><h3>Dadhichi Sarker Shayon</h3><p>Team Lead / Full-Stack — architecture, auth, social, UI, docs.</p></div>
+    <div class="card"><h3>Shawki</h3><p>Backend — marketplace, bill split, booking, listing upload.</p></div>
+    <div class="card"><h3>Plabon Barua</h3><p>Database / Backend — schema, seed, project setup.</p></div>
+  </div>
+  <p style="margin-top:14px">Commits: Dadhichi 8 (47%) · Shawki 5 (29%) · Plabon 3 (18%) · Merge 1 (6%). Branch strategy: `main` ← feature branches `dadhichi` / `shawki` / `plabon`.</p>
+</section>
+
+<!-- 31 DEMO & RUN -->
+<section class="slide">
+  <p class="kicker">Try It</p>
+  <h2>Demo Accounts &amp; Getting Started</h2>
+  <table>
+    <tr><th>Role</th><th>Email</th><th>Password</th></tr>
+    <tr><td>Tenant</td><td>ayesha@example.com</td><td>Roommate123!</td></tr>
+    <tr><td>Landlord</td><td>rakib@example.com</td><td>Roommate123!</td></tr>
+    <tr><td>Tenant</td><td>nusrat@example.com</td><td>Roommate123!</td></tr>
+    <tr><td>Landlord</td><td>sajid@example.com</td><td>Roommate123!</td></tr>
+    <tr><td>Tenant</td><td>tania@example.com</td><td>Roommate123!</td></tr>
+  </table>
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card"><h3>Setup</h3><p>Import `Database/schema.sql` &amp; `seed.sql`, then `php -S localhost:8000`.</p></div>
+    <div class="card"><h3>Or Windows</h3><p>Double-click `start_server.bat`, open http://localhost:8000.</p></div>
+  </div>
+</section>
+
+<!-- 32 CLOSING -->
+<section class="slide title-slide">
+  <p class="kicker">Thank You</p>
+  <h1>RoommateSync</h1>
+  <p class="lead" style="font-size:22px">Find a room, split costs, manage house life — all in one place.</p>
+  <p style="margin-top:24px">Built with by Team RoommateSync · ISD Course Project, KUET</p>
+  <div style="margin-top:18px"><span class="pill">PHP 8.1</span><span class="pill">MySQL 8.0</span><span class="pill">100% Tests Passing</span><span class="pill">7 Modules</span></div>
+</section>
+
+</div>
+
+<div class="nav">
+  <button id="prev">← Prev</button>
+  <span class="pageno"><span id="cur">1</span> / 32</span>
+  <button id="next">Next →</button>
+</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  const total=slides.length, progress=document.getElementById('progress');
+  const cur=document.getElementById('cur');
+  let i=0;
+  function show(n){
+    i=Math.max(0,Math.min(total-1,n));
+    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+    progress.style.width=((i+1)/total*100)+'%';
+    cur.textContent=i+1;
+  }
+  document.getElementById('prev').onclick=()=>show(i-1);
+  document.getElementById('next').onclick=()=>show(i+1);
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key==='PageDown')show(i+1);
+    if(e.key==='ArrowLeft'||e.key==='PageUp')show(i-1);
+    if(e.key==='Home')show(0);
+    if(e.key==='End')show(total-1);
+  });
+  mermaid.initialize({startOnLoad:true,theme:'dark',securityLevel:'loose'});
+  show(0);
+</script>
+</body>
+</html>

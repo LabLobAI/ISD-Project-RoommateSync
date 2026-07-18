@@ -1,0 +1,8 @@
+stateDiagram-v2
+  [*] --> PENDING : Books slot
+  PENDING --> CONFIRMED : Landlord confirms
+  PENDING --> CANCELLED : Cancel / timeout
+  CONFIRMED --> CANCELLED : Either cancels
+  CONFIRMED --> COMPLETED : Viewing happens
+  CANCELLED --> [*]
+  COMPLETED --> [*]

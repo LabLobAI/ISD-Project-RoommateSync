@@ -1,0 +1,30 @@
+graph TB
+  Browser[Web Browser]
+  subgraph PL["Presentation"]
+    Dashboard[index.php Dashboard]
+    Auth[auth pages]
+    Modules[modules pages]
+    CSS[style.css]
+    JS[assets js]
+  end
+  subgraph AL["Application"]
+    Layout[layout.php]
+    Helpers[helpers.php]
+    AuthCore[auth.php RBAC]
+    Bootstrap[bootstrap.php]
+  end
+  subgraph DL["Data"]
+    Database[database.php PDO]
+    MySQL[(MySQL 8.0)]
+  end
+  Uploads[Uploads/ Images]
+  Browser -->|HTTP| Dashboard
+  Browser -->|HTTP| Auth
+  Browser -->|HTTP| Modules
+  Dashboard --> Layout
+  Modules --> Layout
+  Layout --> AuthCore
+  AuthCore --> Database
+  Modules --> Database
+  Database --> MySQL
+  Modules -->|File Upload| Uploads

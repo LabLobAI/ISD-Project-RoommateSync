@@ -1,0 +1,9 @@
+stateDiagram-v2
+  [*] --> Anonymous : App loads
+  Anonymous --> Authenticating : Submit login
+  Authenticating --> Authenticated : Valid
+  Authenticating --> Anonymous : Invalid
+  Authenticated --> Authenticated : Active session
+  Authenticated --> TokenRefresh : Remember-me
+  TokenRefresh --> Authenticated : Refreshed
+  Authenticated --> Anonymous : Logout / expire

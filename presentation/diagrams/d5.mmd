@@ -1,0 +1,11 @@
+erDiagram
+  users ||--o{ listings : owns
+  users ||--o{ appointments : books
+  users ||--o{ connection_requests : sends
+  users ||--o{ user_reviews : writes
+  users ||--o{ messages : sends
+  users ||--o{ bill_logs : creates
+  bill_logs ||--o{ bill_log_roommates : contains
+  listings ||--o{ appointments : has
+  users ||--o{ user_profiles : has
+  users ||--o{ user_profile_tags : has

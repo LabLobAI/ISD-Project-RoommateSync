@@ -1,0 +1,33 @@
+graph TB
+  U1[Register Login]
+  U2[Search Filter]
+  U3[Booking]
+  U4[Connect]
+  U5[Review]
+  U6[Bill Split]
+  P1[1.0 Auth]
+  P2[2.0 Marketplace]
+  P3[3.0 Booking]
+  P4[4.0 Social]
+  P5[5.0 Review]
+  P6[6.0 Bill]
+  D1[(users)]
+  D2[(listings)]
+  D3[(appointments)]
+  D4[(connection_requests)]
+  D5[(messages)]
+  D6[(user_reviews)]
+  D7[(bill_logs)]
+  U1 --> P1
+  U2 --> P2
+  U3 --> P3
+  U4 --> P4
+  U5 --> P5
+  U6 --> P6
+  P1 <--> D1
+  P2 <--> D2
+  P3 <--> D3
+  P4 <--> D4
+  P4 <--> D5
+  P5 <--> D6
+  P6 <--> D7
