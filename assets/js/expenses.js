@@ -21,7 +21,7 @@ function addRoommate(name = '', income = '') {
     row.innerHTML = `
         <input type="text" class="roommate-name" placeholder="Name" value="${name}">
         <input type="number" class="roommate-income" placeholder="Monthly income" min="0" step="0.01" value="${income}">
-        <button type="button" class="secondary-button remove-roommate" style="min-height:46px;">Remove</button>
+        <button type="button" class="secondary-button remove-roommate" style="min-height:38px;">Remove</button>
     `;
     roommateRows.appendChild(row);
 
@@ -71,19 +71,19 @@ async function calculate(save = false) {
                 ${data.bill_log_id ? ` · Saved as Bill #${data.bill_log_id}` : ''}
             </div>
             <table style="width:100%; border-collapse:collapse; margin-top:12px;">
-                <thead><tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
-                    <th style="padding:10px; text-align:left; color:var(--muted);">Name</th>
-                    <th style="padding:10px; text-align:right; color:var(--muted);">Income</th>
-                    <th style="padding:10px; text-align:right; color:var(--muted);">Share %</th>
-                    <th style="padding:10px; text-align:right; color:var(--muted);">Contribution</th>
+                <thead><tr style="border-bottom:1px solid #d5d9d9;">
+                    <th style="padding:10px; text-align:left; color:#565959;">Name</th>
+                    <th style="padding:10px; text-align:right; color:#565959;">Income</th>
+                    <th style="padding:10px; text-align:right; color:#565959;">Share %</th>
+                    <th style="padding:10px; text-align:right; color:#565959;">Contribution</th>
                 </tr></thead>
                 <tbody>
                     ${data.breakdown.map(row => `
-                        <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                        <tr style="border-bottom:1px solid #e7e7e7;">
                             <td style="padding:10px;">${escapeHtml(row.name)}</td>
                             <td style="padding:10px; text-align:right;">৳${Number(row.income).toLocaleString()}</td>
                             <td style="padding:10px; text-align:right;">${row.percentage_share}%</td>
-                            <td style="padding:10px; text-align:right; font-weight:700; color:var(--accent);">৳${Number(row.contribution).toLocaleString()}</td>
+                            <td style="padding:10px; text-align:right; font-weight:700; color:#067d62;">৳${Number(row.contribution).toLocaleString()}</td>
                         </tr>
                     `).join('')}
                 </tbody>

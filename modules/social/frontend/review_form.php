@@ -37,8 +37,7 @@ layout_header('Peer Review', [
 
         <div class="page-content">
             <article class="card">
-                <p class="card-kicker">Write review</p>
-                <h2 class="card-title">New Review</h2>
+                <h2 class="card-title">Write a Review</h2>
 
                 <form id="reviewForm">
                     <input type="hidden" id="reviewerId" value="<?= (int) $currentUserId ?>">
@@ -54,12 +53,12 @@ layout_header('Peer Review', [
                     </div>
 
                     <div class="form-group">
-                        <label for="cleanliness">Cleanliness score</label>
+                        <label for="cleanliness">Cleanliness score: <span id="cleanlinessVal">5</span>/5</label>
                         <input id="cleanliness" type="range" min="1" max="5" value="5">
                     </div>
 
                     <div class="form-group">
-                        <label for="communication">Communication score</label>
+                        <label for="communication">Communication score: <span id="communicationVal">4</span>/5</label>
                         <input id="communication" type="range" min="1" max="5" value="4">
                     </div>
 
@@ -73,11 +72,10 @@ layout_header('Peer Review', [
                     </div>
                 </form>
 
-                <div id="reviewStatus" class="status-box">Ready to send.</div>
+                <div id="reviewStatus" class="status-box" style="margin-top:14px;">Ready to send.</div>
             </article>
 
             <aside class="card">
-                <p class="card-kicker">Review summary</p>
                 <h2 class="card-title" id="summaryName">Loading...</h2>
 
                 <div class="review-metrics">
@@ -86,11 +84,11 @@ layout_header('Peer Review', [
                         <strong id="totalReviews">0</strong>
                     </div>
                     <div class="metric">
-                        <span>Average cleanliness</span>
+                        <span>Avg. cleanliness</span>
                         <strong id="avgCleanliness">-</strong>
                     </div>
                     <div class="metric">
-                        <span>Average communication</span>
+                        <span>Avg. communication</span>
                         <strong id="avgCommunication">-</strong>
                     </div>
                 </div>
@@ -109,6 +107,13 @@ const totalReviews = document.getElementById('totalReviews');
 const avgCleanliness = document.getElementById('avgCleanliness');
 const avgCommunication = document.getElementById('avgCommunication');
 const aggregateScore = document.getElementById('aggregateScore');
+const cleanlinessInput = document.getElementById('cleanliness');
+const communicationInput = document.getElementById('communication');
+const cleanlinessVal = document.getElementById('cleanlinessVal');
+const communicationVal = document.getElementById('communicationVal');
+
+cleanlinessInput.addEventListener('input', () => cleanlinessVal.textContent = cleanlinessInput.value);
+communicationInput.addEventListener('input', () => communicationVal.textContent = communicationInput.value);
 
 function selectedName() {
     return revieweeSelect.options[revieweeSelect.selectedIndex]?.textContent || 'Roommate';
@@ -139,8 +144,8 @@ reviewForm.addEventListener('submit', async (event) => {
     const payload = {
         reviewer_id: Number(document.getElementById('reviewerId').value),
         reviewee_id: Number(revieweeSelect.value),
-        cleanliness_score: Number(document.getElementById('cleanliness').value),
-        communication_score: Number(document.getElementById('communication').value),
+        cleanliness_score: Number(cleanlinessInput.value),
+        communication_score: Number(communicationInput.value),
         written_feedback: document.getElementById('feedback').value
     };
 

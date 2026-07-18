@@ -35,7 +35,7 @@ function handle_room_image_upload(array $file): string
         throw new RuntimeException('Image upload failed. Please try again.');
     }
 
-    $maxSize = 5 * 1024 * 1024; // 5 MB
+    $maxSize = 5 * 1024 * 1024;
     if ($file['size'] > $maxSize) {
         throw new RuntimeException('Image size must not exceed 5 MB.');
     }
@@ -65,7 +65,6 @@ function handle_room_image_upload(array $file): string
         throw new RuntimeException('Unable to move uploaded image to server folder.');
     }
 
-    // Store browser-accessible relative path, not binary image data.
     $publicBase = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
     return $publicBase . '/uploads/' . $safeFileName;
 }
@@ -154,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'image_url' => $imagePath,
             ];
 
-            $successMessage = 'Room listing has been created successfully and saved to the database.';
+            $successMessage = 'Room listing has been created successfully.';
 
             $_POST = [];
         } catch (Throwable $exception) {
@@ -179,7 +178,7 @@ layout_header('Create Rental Listing', [
         <?php if ($errors): ?>
             <div class="alert alert-error">
                 <strong>Please fix the following:</strong>
-                <ul>
+                <ul style="margin:8px 0 0;padding-left:20px;">
                     <?php foreach ($errors as $error): ?>
                         <li><?= h($error) ?></li>
                     <?php endforeach; ?>
@@ -198,56 +197,53 @@ layout_header('Create Rental Listing', [
                 <img src="<?= h($createdListing['image_url']) ?>" alt="Created room image">
                 <div>
                     <h2><?= h($createdListing['title']) ?></h2>
-                    <p><?= h($createdListing['location_text']) ?></p>
-                    <p><strong>৳<?= money($createdListing['rent']) ?></strong> / month</p>
-                    <p><?= h(ucfirst($createdListing['room_type'])) ?> room &middot; <?= h((string) $createdListing['bedrooms']) ?> bed &middot; <?= h((string) $createdListing['bathrooms']) ?> bath</p>
+                    <p style="color:#565959;"><?= h($createdListing['location_text']) ?></p>
+                    <p style="font-size:18px;font-weight:800;">৳<?= money($createdListing['rent']) ?> <span style="font-size:13px;font-weight:400;color:#565959;">/ month</span></p>
+                    <p style="color:#565959;font-size:13px;"><?= h(ucfirst($createdListing['room_type'])) ?> room &middot; <?= h((string) $createdListing['bedrooms']) ?> bed &middot; <?= h((string) $createdListing['bathrooms']) ?> bath</p>
                 </div>
             </section>
         <?php endif; ?>
 
         <section class="card">
             <form method="post" enctype="multipart/form-data" id="listingForm">
-                <label>
-                    Listing Title
+                <div class="form-group">
+                    <label>Listing Title</label>
                     <input type="text" name="title" maxlength="180" required value="<?= h((string) post_value('title')) ?>" placeholder="Sunny private room near campus">
-                </label>
+                </div>
 
                 <div class="grid-2">
-                    <label>
-                        Location / Address
+                    <div class="form-group">
+                        <label>Location / Address</label>
                         <input type="text" name="location_text" maxlength="180" required value="<?= h((string) post_value('location_text')) ?>" placeholder="Dhanmondi, Dhaka">
-                    </label>
-
-                    <label>
-                        Monthly Rent
+                    </div>
+                    <div class="form-group">
+                        <label>Monthly Rent (৳)</label>
                         <input type="number" name="rent" min="1" step="0.01" required value="<?= h((string) post_value('rent')) ?>" placeholder="15000">
-                    </label>
+                    </div>
                 </div>
 
                 <div class="grid-3">
-                    <label>
-                        Room Type
+                    <div class="form-group">
+                        <label>Room Type</label>
                         <select name="room_type" required>
                             <option value="private" <?= post_value('room_type', 'private') === 'private' ? 'selected' : '' ?>>Private</option>
                             <option value="shared" <?= post_value('room_type') === 'shared' ? 'selected' : '' ?>>Shared</option>
                         </select>
-                    </label>
-
-                    <label>
-                        Bedrooms
+                    </div>
+                    <div class="form-group">
+                        <label>Bedrooms</label>
                         <input type="number" name="bedrooms" min="1" max="10" required value="<?= h((string) post_value('bedrooms', 1)) ?>">
-                    </label>
-
-                    <label>
-                        Bathrooms
+                    </div>
+                    <div class="form-group">
+                        <label>Bathrooms</label>
                         <input type="number" name="bathrooms" min="0.5" max="10" step="0.5" required value="<?= h((string) post_value('bathrooms', 1)) ?>">
-                    </label>
+                    </div>
                 </div>
 
-                <label>
-                    Description
+                <div class="form-group">
+                    <label>Description</label>
                     <textarea name="description" rows="4" required placeholder="Room facilities, nearby locations, other details..."><?= h((string) post_value('description')) ?></textarea>
-                </label>
+                </div>
 
                 <fieldset>
                     <legend>House Rules</legend>
@@ -261,10 +257,10 @@ layout_header('Create Rental Listing', [
                     </div>
                 </fieldset>
 
-                <label>
-                    Room Image <span class="small-note">JPG/PNG, max 5 MB</span>
+                <div class="form-group">
+                    <label>Room Image <span class="small-note">JPG/PNG, max 5 MB</span></label>
                     <input type="file" name="room_image" id="roomImage" accept="image/jpeg,image/png" required>
-                </label>
+                </div>
 
                 <div class="preview-panel" id="previewPanel" hidden>
                     <img id="imagePreview" alt="Room preview">

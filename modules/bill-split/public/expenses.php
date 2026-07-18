@@ -123,17 +123,18 @@ layout_header('Bill Split Calculator', [
 
         <section class="card">
             <form id="expenseForm" novalidate>
-                <div class="form-group">
-                    <label for="billName">Bill Name</label>
-                    <input type="text" id="billName" value="Internet Bill">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="billName">Bill Name</label>
+                        <input type="text" id="billName" value="Internet Bill">
+                    </div>
+                    <div class="form-group">
+                        <label for="totalBill">Total Bill Amount</label>
+                        <input type="number" id="totalBill" min="0" step="0.01" value="200">
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="totalBill">Total Bill Amount</label>
-                    <input type="number" id="totalBill" min="0" step="0.01" value="200">
-                </div>
-
-                <h3>Roommates</h3>
+                <h3 style="margin-top:16px;margin-bottom:12px;">Roommates</h3>
                 <div id="roommateRows"></div>
                 <button type="button" id="addRoommate" class="secondary-button">Add Roommate</button>
 

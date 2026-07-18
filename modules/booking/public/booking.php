@@ -153,19 +153,20 @@ layout_header('Book Viewing', [
         </header>
 
         <section class="card">
-            <div class="form-group">
-                <label for="listingId">Listing ID</label>
-                <input type="number" id="listingId" value="<?= h((string) $listingId) ?>" min="1">
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="listingId">Listing ID</label>
+                    <input type="number" id="listingId" value="<?= h((string) $listingId) ?>" min="1">
+                </div>
+                <div class="form-group">
+                    <label for="bookingDate">Date</label>
+                    <input type="date" id="bookingDate">
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="bookingDate">Date</label>
-                <input type="date" id="bookingDate">
-            </div>
-
-            <h3>Available Time Slots</h3>
+            <h3 style="margin-top:16px;margin-bottom:12px;">Available Time Slots</h3>
             <div id="slotGrid" class="slot-grid"></div>
-            <div id="bookingMessage"></div>
+            <div id="bookingMessage" style="margin-top:16px;"></div>
         </section>
     </div>
 

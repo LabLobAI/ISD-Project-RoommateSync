@@ -84,18 +84,17 @@ layout_header('Rental Marketplace', [
 
         <div class="page-content">
             <aside class="card filter-panel">
-                <p class="card-kicker">Narrow results</p>
-                <h2 class="card-title">Filters</h2>
+                <h2 class="card-title">Refine Results</h2>
 
                 <div class="form-group">
-                    <label for="maxPrice">Maximum Price: <span id="priceLabel">20000</span></label>
+                    <label for="maxPrice">Max Price: ৳<span id="priceLabel">20000</span></label>
                     <input type="range" id="maxPrice" min="5000" max="30000" step="500" value="20000">
                 </div>
 
                 <div class="form-group">
                     <label for="roomType">Room Type</label>
                     <select id="roomType">
-                        <option value="">Any</option>
+                        <option value="">All Types</option>
                         <option value="private">Private</option>
                         <option value="shared">Shared</option>
                     </select>
@@ -103,11 +102,12 @@ layout_header('Rental Marketplace', [
 
                 <div class="form-group">
                     <label for="location">Location</label>
-                    <input type="text" id="location" placeholder="Example: Dhanmondi">
+                    <input type="text" id="location" placeholder="e.g. Dhanmondi">
                 </div>
             </aside>
 
             <section class="card">
+                <h2 class="card-title" style="margin-bottom:16px;">Results</h2>
                 <div id="listingGrid" class="listings-grid"></div>
             </section>
         </div>

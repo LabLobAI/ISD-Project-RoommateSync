@@ -32,9 +32,8 @@ layout_header('Create account - RoommateSync', [
 
     <div class="shell auth-shell">
         <section class="auth-card">
-            <p class="eyebrow">Get started</p>
-            <h1>Create your account</h1>
-            <p class="lede">Join the community and start finding your perfect roommate.</p>
+            <h1>Create account</h1>
+            <p style="color:#565959;margin-top:4px;font-size:14px;">Join the community and find your perfect roommate.</p>
 
             <?php if ($errors): ?>
                 <div class="flash-message error"><?= h(implode(' ', $errors)) ?></div>
@@ -57,10 +56,13 @@ layout_header('Create account - RoommateSync', [
                     Password
                     <input type="password" name="password" required minlength="8" autocomplete="new-password">
                 </label>
-                <button type="submit" class="primary-button">Create account</button>
+                <button type="submit" class="primary-button">Create your account</button>
             </form>
 
-            <p class="auth-footnote">Already have an account? <a href="<?= rm_url('auth/login.php') ?>">Sign in</a> or <a href="<?= rm_url('index.php') ?>">return home</a>.</p>
+            <div style="text-align:center;margin-top:16px;padding-top:16px;border-top:1px solid #e7e7e7;">
+                <p style="color:#565959;font-size:13px;margin:0;">Already have an account?</p>
+                <a href="<?= rm_url('auth/login.php') ?>" style="font-size:14px;">Sign in</a>
+            </div>
         </section>
     </div>
 

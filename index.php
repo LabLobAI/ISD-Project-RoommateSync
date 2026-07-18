@@ -133,7 +133,7 @@ layout_header('RoommateSync', [
 
         <section class="section">
             <div class="section-header">
-                <h2>Modules</h2>
+                <h2>Explore Features</h2>
             </div>
             <div class="card-grid">
                 <?php foreach ($modules as $module): ?>
@@ -141,7 +141,7 @@ layout_header('RoommateSync', [
                         <div class="module-icon"><?= $module['icon'] ?></div>
                         <h3><?= e($module['title']) ?></h3>
                         <p><?= e($module['summary']) ?></p>
-                        <span class="card-arrow">&rarr; Open</span>
+                        <span class="card-arrow">Open &rarr;</span>
                     </a>
                 <?php endforeach; ?>
             </div>

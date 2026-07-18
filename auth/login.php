@@ -31,9 +31,8 @@ layout_header('Sign in - RoommateSync', [
 
     <div class="shell auth-shell">
         <section class="auth-card">
-            <p class="eyebrow">Welcome back</p>
-            <h1>Sign in to your account</h1>
-            <p class="lede">Access your dashboard, listings, and connections.</p>
+            <h1>Sign in</h1>
+            <p style="color:#565959;margin-top:4px;font-size:14px;">Access your dashboard, listings, and connections.</p>
 
             <?php if ($errors): ?>
                 <div class="flash-message error"><?= h(implode(' ', $errors)) ?></div>
@@ -50,12 +49,15 @@ layout_header('Sign in - RoommateSync', [
                 </label>
                 <label class="checkbox-row">
                     <input type="checkbox" name="remember" checked>
-                    Remember me on this device
+                    Keep me signed in
                 </label>
                 <button type="submit" class="primary-button">Sign in</button>
             </form>
 
-            <p class="auth-footnote">New here? <a href="<?= rm_url('auth/register.php') ?>">Create an account</a> or <a href="<?= rm_url('index.php') ?>">return home</a>.</p>
+            <div style="text-align:center;margin-top:16px;padding-top:16px;border-top:1px solid #e7e7e7;">
+                <p style="color:#565959;font-size:13px;margin:0;">New to RoommateSync?</p>
+                <a href="<?= rm_url('auth/register.php') ?>" style="font-size:14px;">Create your account</a>
+            </div>
         </section>
     </div>
 

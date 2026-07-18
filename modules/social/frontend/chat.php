@@ -36,7 +36,6 @@ layout_header('Chat', [
 
         <div class="page-content">
             <article class="card">
-                <p class="card-kicker">Conversation</p>
                 <h2 class="card-title">Messages</h2>
 
                 <div class="form-group">
@@ -55,7 +54,6 @@ layout_header('Chat', [
             </article>
 
             <aside class="card">
-                <p class="card-kicker">Send message</p>
                 <h2 class="card-title">New Message</h2>
 
                 <form id="messageForm">
@@ -95,7 +93,7 @@ function renderMessages(messages) {
     stream.innerHTML = messages.map((message) => {
         const mine = Number(message.sender_id) === senderId;
         return `
-            <div class="stream-item" style="margin-left:${mine ? '12%' : '0'}; margin-right:${mine ? '0' : '12%'}; background:${mine ? 'rgba(56, 189, 248, 0.1)' : 'rgba(255, 255, 255, 0.04)'};">
+            <div class="stream-item" style="margin-left:${mine ? '12%' : '0'}; margin-right:${mine ? '0' : '12%'}; background:${mine ? '#e3f2fd' : '#fafafa'}; border-color:${mine ? '#90caf9' : '#e7e7e7'};">
                 <div class="stream-meta">
                     <span>${mine ? 'You' : 'Them'}</span>
                     <span>${escapeHtml(message.sent_at)}</span>

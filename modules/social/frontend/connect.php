@@ -24,7 +24,7 @@ layout_header('Connect', [
         <header class="page-header">
             <div>
                 <p class="eyebrow">Social</p>
-                <h1>Connect</h1>
+                <h1>Connect with Roommates</h1>
                 <p class="lede">Double opt-in matching that unlocks chat once both sides accept.</p>
             </div>
             <nav class="header-links" aria-label="Social navigation">
@@ -36,7 +36,6 @@ layout_header('Connect', [
 
         <div class="page-content">
             <article class="card">
-                <p class="card-kicker">Request connection</p>
                 <h2 class="card-title">Find a Roommate</h2>
 
                 <div class="form-group">
@@ -54,17 +53,16 @@ layout_header('Connect', [
                     <button id="sendRequest" class="primary-button" type="button">Send request</button>
                 </div>
 
-                <div id="connectStatus" class="status-box">Ready to connect.</div>
+                <div id="connectStatus" class="status-box" style="margin-top:14px;">Ready to connect.</div>
             </article>
 
             <aside class="card">
-                <p class="card-kicker">How it works</p>
-                <h2 class="card-title">Connection flow</h2>
+                <h2 class="card-title">How it works</h2>
 
                 <div style="display:grid; gap:12px;">
-                    <div class="status-box">1. One person sends a request.</div>
-                    <div class="status-box">2. The other person sends one back.</div>
-                    <div class="status-box">3. Both rows become accepted and chat unlocks.</div>
+                    <div class="status-box"><strong>1.</strong> One person sends a request.</div>
+                    <div class="status-box"><strong>2.</strong> The other person sends one back.</div>
+                    <div class="status-box"><strong>3.</strong> Both rows become accepted and chat unlocks.</div>
                 </div>
             </aside>
         </div>
