@@ -1,0 +1,31 @@
+# RoommateSync — ignore rules
+
+# Uploaded room images (user content, not source)
+modules/listing-upload/public/uploads/
+uploads/
+
+# PHP / OS / editor noise
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# Local environment / secrets
+.env
+.env.local
+*.local
+
+# Python build artifacts
+__pycache__/
+*.pyc
+
+# Presentation build artifacts (generated PNG/MMD diagrams)
+presentation/diagrams/
+presentation/t1.mmd
+presentation/t1.png
+presentation/t2.mmd
+presentation/t2.png
+presentation/uc.mmd
+presentation/uc.png
